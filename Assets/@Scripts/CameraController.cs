@@ -18,6 +18,9 @@ public class CameraController : MonoBehaviour
 
   private float _invertXVal;
   private float _invertYVal;
+  
+  // Property
+  public Quaternion GetPlanarRotation => Quaternion.Euler(0, _rotationY, 0);
 
   private void Start()
   {
