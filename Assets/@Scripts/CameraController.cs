@@ -8,6 +8,10 @@ public class CameraController : MonoBehaviour
   [SerializeField] private float _minVerticalAngle = -20;   // x축 회전 최소 각도
   [SerializeField] private float _maxVerticalAngle = 45;    // x축 회전 최대 각도
 
+  [SerializeField] private float _zoomSpeed = 1.0f;
+  [SerializeField] private float _minZoomDistance = 1.5f;
+  [SerializeField] private float _maxZoomDistance = 8.0f;
+
   [SerializeField] private Vector2 _framingOffset;          // 캐릭터-카메라 높이 조절 (피봇)
 
   [SerializeField] private bool _invertX;                   // x축 회전 방향 반전
@@ -33,10 +37,10 @@ public class CameraController : MonoBehaviour
     _invertXVal = (_invertX) ? -1 : 1;
     _invertYVal = (_invertY) ? -1 : 1;
     
-    _rotationX += Input.GetAxis("Mouse Y") * _rotationSpeed * _invertXVal;
+    _rotationX += Input.GetAxis("Camera Y") * _rotationSpeed * _invertXVal;
     _rotationX = Mathf.Clamp(_rotationX, _minVerticalAngle, _maxVerticalAngle);
     
-    _rotationY += Input.GetAxis("Mouse X") * _rotationSpeed * _invertYVal;
+    _rotationY += Input.GetAxis("Camera X") * _rotationSpeed * _invertYVal;
 
     var targetRotation = Quaternion.Euler(_rotationX, _rotationY, 0);
 
@@ -44,5 +48,9 @@ public class CameraController : MonoBehaviour
     
     transform.position = focusPosition - targetRotation * new Vector3(0, 0, _distance);
     transform.rotation = targetRotation;
+    
+    //zoom
+    _distance += Input.GetAxis("Mouse ScrollWheel") * _zoomSpeed;
+    _distance = Mathf.Clamp(_distance, _minZoomDistance, _maxZoomDistance);
   }
 }
