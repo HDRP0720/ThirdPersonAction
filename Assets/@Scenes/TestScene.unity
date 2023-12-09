@@ -458,6 +458,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1387156075}
   - component: {fileID: 1387156074}
+  - component: {fileID: 1387156076}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -495,6 +496,27 @@ Transform:
   - {fileID: 1836184537}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &1387156076
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1387156073}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: f2c836f3e5c029140a0cc913d7df766a, type: 3}
+  m_Controller: {fileID: 9100000, guid: 394dd8eea43f8cf4ebb061f3df56558f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1513905514
 GameObject:
   m_ObjectHideFlags: 0
@@ -765,7 +787,8 @@ PrefabInstance:
       propertyPath: shouldDrawGizmosThisFrame
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4996169005105878503, guid: 2174b7c0d515d9c4bb5ff2ccf89e280c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:

@@ -76,5 +76,6 @@ crashlytics-build.properties
 /Assets/Plugins/Editor
 
 # Licensed Asset
+/Assets/@Resources/Animations
 /Assets/LicensedAssets
 /Packages/com.singularitygroup.hotreload
