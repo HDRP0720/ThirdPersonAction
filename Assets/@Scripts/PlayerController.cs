@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
   private CameraController _cameraController;
   private CharacterController _cc;
   private Animator _animator;
+  private MeeleCombat _meeleCombat;
 
   private bool _isGrounded;
   private float _ySpeed;
@@ -29,9 +30,16 @@ public class PlayerController : MonoBehaviour
     
     _cc = GetComponent<CharacterController>();
     _animator = GetComponent<Animator>();
+    _meeleCombat = GetComponent<MeeleCombat>();
   }
   private void Update()
   {
+    if (_meeleCombat.IsInAction)
+    {
+      _animator.SetFloat(MoveAmount, 0f);
+      return;
+    }
+    
     float h = Input.GetAxis("Horizontal");
     float v = Input.GetAxis("Vertical");
 
