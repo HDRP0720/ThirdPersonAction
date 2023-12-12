@@ -626,6 +626,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b04296447d341fe4580543018690c58f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _weapon: {fileID: 1375018760}
+  _attackState: 0
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -929,6 +931,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b04296447d341fe4580543018690c58f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _weapon: {fileID: 310027641}
+  _attackState: 0
 --- !u!114 &1387156079
 MonoBehaviour:
   m_ObjectHideFlags: 0
