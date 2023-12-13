@@ -6,15 +6,17 @@ using UnityEngine;
 public class MeeleCombat : MonoBehaviour
 {
   [SerializeField] private GameObject _weapon;
-  [SerializeField] private EAttackState _attackState;
+  [SerializeField] private List<AttackData> _attackDatas;
   
   private Animator _animator;
   private BoxCollider _weaponCollider;
+  private EAttackState _attackState;
+  private bool _isInCombo;
+  private int _comboCount = 0;
   
   // Property
   public bool IsInAction { get; private set; } = false;
-  
-  private static readonly int SS_Slash01 = Animator.StringToHash("SS_Slash01");
+
   private static readonly int Hit_Fwd = Animator.StringToHash("Hit_Fwd");
 
   private void Awake()
@@ -35,7 +37,6 @@ public class MeeleCombat : MonoBehaviour
     {
       StartCoroutine(PlayHitReaction());
       Debug.Log($"{this.gameObject.name} was hit!!");
-    
     }
   }
 
@@ -45,6 +46,10 @@ public class MeeleCombat : MonoBehaviour
     {
       StartCoroutine(Attack());
     }
+    else if (_attackState == EAttackState.Impact || _attackState == EAttackState.Cooldown)
+    {
+      _isInCombo = true;
+    }
   }
 
   private IEnumerator Attack()
@@ -52,10 +57,7 @@ public class MeeleCombat : MonoBehaviour
     IsInAction = true;
     _attackState = EAttackState.Windup;
     
-    float impactStartTime = 0.14f;  // 공격 애니메이션에서 실제 공격 동작이 시작하는 순간 (전체 시간 대비 백분율)
-    float impactEndTime = 0.42f;    // 공격 애니메이션에서 실제 공격 동작이 끝난 순간 (전체 시간 대비 백분율)
-    
-    _animator.CrossFade(SS_Slash01, 0.2f);
+    _animator.CrossFade(_attackDatas[_comboCount].AnimName, 0.2f);
     yield return null;
     
     var animState = _animator.GetNextAnimatorStateInfo(1);
@@ -68,7 +70,7 @@ public class MeeleCombat : MonoBehaviour
 
       if (_attackState == EAttackState.Windup)
       {
-        if (normalizedTime >= impactStartTime)
+        if (normalizedTime >= _attackDatas[_comboCount].ImpactStartTime)
         {
           _attackState = EAttackState.Impact;
           _weaponCollider.enabled = true;
@@ -76,7 +78,7 @@ public class MeeleCombat : MonoBehaviour
       }
       else if (_attackState == EAttackState.Impact)
       {
-        if (normalizedTime >= impactEndTime)
+        if (normalizedTime >= _attackDatas[_comboCount].ImpactEndTime)
         {
           _attackState = EAttackState.Cooldown;
           _weaponCollider.enabled = false;
@@ -85,12 +87,21 @@ public class MeeleCombat : MonoBehaviour
       else if (_attackState == EAttackState.Cooldown)
       {
         // TODO: Handle combo attack
+        if (_isInCombo)
+        {
+          _isInCombo = false;
+          _comboCount = (_comboCount + 1) % _attackDatas.Count;
+
+          StartCoroutine(Attack());
+          yield break;
+        }
       }
       
       yield return null;
     }
 
     _attackState = EAttackState.Idle;
+    _comboCount = 0;
     IsInAction = false;
   }
   
