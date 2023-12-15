@@ -635,7 +635,7 @@ Animator:
   m_GameObject: {fileID: 416944811}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: b69174d668ba02d44b14a084b217670a, type: 3}
-  m_Controller: {fileID: 9100000, guid: 394dd8eea43f8cf4ebb061f3df56558f, type: 2}
+  m_Controller: {fileID: 9100000, guid: 124ad077b7ba4034bb4600465ca502e1, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -716,6 +716,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _distanceToStop: 3
+  _distanceThreshold: 1
 --- !u!114 &416944818
 MonoBehaviour:
   m_ObjectHideFlags: 0

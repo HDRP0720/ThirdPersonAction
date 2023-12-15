@@ -15,9 +15,8 @@ public class EnemyController : MonoBehaviour
   [field: SerializeField] public MeeleCombat Target { get; set; }
   [field: SerializeField] public float FOV { get; set; } = 180f;
   
-  // Caching states for ~~~
+  // Caching states
   private Dictionary<EEnemyStates, State<EnemyController>> _stateDict;
-
 
   private void Start()
   {
@@ -28,7 +27,7 @@ public class EnemyController : MonoBehaviour
     _stateDict = new Dictionary<EEnemyStates, State<EnemyController>>
     {
       [EEnemyStates.Idle] = GetComponent<IdleState>(),
-      [EEnemyStates.Chase] = GetComponent<ChaseState>()
+      [EEnemyStates.CombatMovement] = GetComponent<CombatMovementState>()
     };
   
     StateMachine.ChangeState(_stateDict[EEnemyStates.Idle]);
@@ -36,6 +35,8 @@ public class EnemyController : MonoBehaviour
   private void Update()
   {
     StateMachine.Execute();
+    
+    Animator.SetFloat("moveAmount", NavAgent.velocity.magnitude / NavAgent.speed);
   }
 
   public void ChangeState(EEnemyStates state)
@@ -44,4 +45,4 @@ public class EnemyController : MonoBehaviour
   }
 }
 
-public enum EEnemyStates { Idle, Chase }
+public enum EEnemyStates { Idle, CombatMovement }

@@ -9,7 +9,6 @@ public class IdleState : State<EnemyController>
   public override void Enter(EnemyController owner)
   {
     _enemy = owner;
-
   }
 
   public override void Execute()
@@ -21,7 +20,7 @@ public class IdleState : State<EnemyController>
       if (angle <= _enemy.FOV / 2)
       {
         _enemy.Target = target;
-        _enemy.ChangeState(EEnemyStates.Chase);
+        _enemy.ChangeState(EEnemyStates.CombatMovement);
         break;
       }
     }
