@@ -11,12 +11,18 @@ public class VisionSensor : MonoBehaviour
   {
     var fighter = other.GetComponent<MeeleCombat>();
     if (fighter != null)
+    {
       _enemy.TargetsInRange.Add(fighter);
+      EnemyManager.Instance.AddEnemyInRange(_enemy);
+    }
   }
   private void OnTriggerExit(Collider other)
   {
     var fighter = other.GetComponent<MeeleCombat>();
     if (fighter != null)
+    {
       _enemy.TargetsInRange.Remove(fighter);
+      EnemyManager.Instance.RemoveEnemyInRange(_enemy);
+    }
   }
 }

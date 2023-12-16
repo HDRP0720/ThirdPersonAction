@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CombatMovementState : State<EnemyController>
@@ -20,6 +18,7 @@ public class CombatMovementState : State<EnemyController>
     _enemy = owner;
 
     _enemy.NavAgent.stoppingDistance = _distanceToStop;
+    _enemy.CombatMovementTimer = 0f;
   }
 
   public override void Execute()
@@ -61,11 +60,13 @@ public class CombatMovementState : State<EnemyController>
       _enemy.NavAgent.Move(rotatedPos - vecToTarget);
       _enemy.transform.rotation = Quaternion.LookRotation(-rotatedPos);
     }
+
+    _enemy.CombatMovementTimer += Time.deltaTime;
   }
 
   public override void Exit()
   {
-
+    _enemy.CombatMovementTimer = 0f;
   }
 
   private void StartChaseStance()

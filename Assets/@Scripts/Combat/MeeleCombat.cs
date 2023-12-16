@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class MeeleCombat : MonoBehaviour
 {
@@ -11,12 +12,12 @@ public class MeeleCombat : MonoBehaviour
   private Animator _animator;
   private BoxCollider _weaponCollider;
   private SphereCollider _leftHandCollider, _rightHandCollider, _leftFootCollider, _rightFootCollider;
-  private EAttackState _attackState;
   private bool _isInCombo;
   private int _comboCount = 0;
   
   // Property
   public bool IsInAction { get; private set; } = false;
+  public EAttackStance AttackStance { get; private set; }
 
   private static readonly int Hit_Fwd = Animator.StringToHash("Hit_Fwd");
 
@@ -41,7 +42,7 @@ public class MeeleCombat : MonoBehaviour
   {
     if (other.CompareTag("Hitbox") && !IsInAction)
     {
-      StartCoroutine(PlayHitReaction());
+      StartCoroutine(CoPlayHitReaction());
       Debug.Log($"{this.gameObject.name} was hit!!");
     }
   }
@@ -50,18 +51,18 @@ public class MeeleCombat : MonoBehaviour
   {
     if (!IsInAction)
     {
-      StartCoroutine(Attack());
+      StartCoroutine(CoAttack());
     }
-    else if (_attackState == EAttackState.Impact || _attackState == EAttackState.Cooldown)
+    else if (AttackStance == EAttackStance.Impact || AttackStance == EAttackStance.Cooldown)
     {
       _isInCombo = true;
     }
   }
 
-  private IEnumerator Attack()
+  private IEnumerator CoAttack()
   {
     IsInAction = true;
-    _attackState = EAttackState.Windup;
+    AttackStance = EAttackStance.Windup;
     
     _animator.CrossFade(_attackDatas[_comboCount].AnimName, 0.2f);
     yield return null;
@@ -74,23 +75,23 @@ public class MeeleCombat : MonoBehaviour
       timer += Time.deltaTime;
       float normalizedTime = timer / animState.length;
 
-      if (_attackState == EAttackState.Windup)
+      if (AttackStance == EAttackStance.Windup)
       {
         if (normalizedTime >= _attackDatas[_comboCount].ImpactStartTime)
         {
-          _attackState = EAttackState.Impact;
+          AttackStance = EAttackStance.Impact;
           EnableHitboxCollider(_attackDatas[_comboCount]);
         }
       }
-      else if (_attackState == EAttackState.Impact)
+      else if (AttackStance == EAttackStance.Impact)
       {
         if (normalizedTime >= _attackDatas[_comboCount].ImpactEndTime)
         {
-          _attackState = EAttackState.Cooldown;
+          AttackStance = EAttackStance.Cooldown;
           DisableAllHitboxColliders();
         }
       }
-      else if (_attackState == EAttackState.Cooldown)
+      else if (AttackStance == EAttackStance.Cooldown)
       {
         // TODO: Handle combo attack
         if (_isInCombo)
@@ -98,7 +99,7 @@ public class MeeleCombat : MonoBehaviour
           _isInCombo = false;
           _comboCount = (_comboCount + 1) % _attackDatas.Count;
 
-          StartCoroutine(Attack());
+          StartCoroutine(CoAttack());
           yield break;
         }
       }
@@ -106,12 +107,12 @@ public class MeeleCombat : MonoBehaviour
       yield return null;
     }
 
-    _attackState = EAttackState.Idle;
+    AttackStance = EAttackStance.Idle;
     _comboCount = 0;
     IsInAction = false;
   }
   
-  private IEnumerator PlayHitReaction()
+  private IEnumerator CoPlayHitReaction()
   {
     IsInAction = true;
     _animator.CrossFade(Hit_Fwd, 0.2f);
@@ -157,4 +158,4 @@ public class MeeleCombat : MonoBehaviour
   }
 }
 
-public enum EAttackState {Idle, Windup, Impact, Cooldown}
+public enum EAttackStance {Idle, Windup, Impact, Cooldown}
