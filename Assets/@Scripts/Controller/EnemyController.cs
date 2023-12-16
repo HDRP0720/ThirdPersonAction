@@ -6,6 +6,10 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
+  // Navmesh SetDestination 대신 Move를 사용하여 Navmesh의 velocity 사용불가.
+  // 이를 해결하기 위해 프레임간의 거리차이를 활용하여 velocity를 직접 계산
+  private Vector3 prevPos;  
+  
   // Auto-Property
   public NavMeshAgent NavAgent { get; private set; }
   public Animator Animator { get; private set; }
@@ -36,7 +40,18 @@ public class EnemyController : MonoBehaviour
   {
     StateMachine.Execute();
     
-    Animator.SetFloat("moveAmount", NavAgent.velocity.magnitude / NavAgent.speed);
+    // v = dx / dt
+    var deltaPos = transform.position - prevPos;
+    var velocity = deltaPos / Time.deltaTime;
+    
+    float forwardSpeed = Vector3.Dot(velocity, transform.forward);
+    Animator.SetFloat("forwardSpeed", forwardSpeed / NavAgent.speed, 0.2f, Time.deltaTime);
+
+    float angle = Vector3.SignedAngle(transform.forward, velocity, Vector3.up);
+    float strafeSpeed = Mathf.Sin(angle * Mathf.Deg2Rad);
+    Animator.SetFloat("strafeSpeed", strafeSpeed, 0.2f, Time.deltaTime);
+
+    prevPos = transform.position;
   }
 
   public void ChangeState(EEnemyStates state)

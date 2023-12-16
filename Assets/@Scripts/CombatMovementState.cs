@@ -55,10 +55,12 @@ public class CombatMovementState : State<EnemyController>
         return;
       }
       
-      transform.RotateAround(_enemy.Target.transform.position, Vector3.up, _circlingSpeed * _circlingDir * Time.deltaTime);
+      var vecToTarget = _enemy.transform.position - _enemy.Target.transform.position;
+      var rotatedPos = Quaternion.Euler(0, _circlingSpeed * _circlingDir * Time.deltaTime, 0) * vecToTarget;
+      
+      _enemy.NavAgent.Move(rotatedPos - vecToTarget);
+      _enemy.transform.rotation = Quaternion.LookRotation(-rotatedPos);
     }
- 
-    _enemy.Animator.SetFloat("moveAmount", _enemy.NavAgent.velocity.magnitude / _enemy.NavAgent.speed);
   }
 
   public override void Exit()
@@ -70,7 +72,7 @@ public class CombatMovementState : State<EnemyController>
   {
     _stance = ECombatStance.Chase;
     _enemy.Animator.SetBool("IsCombatMode", false);
-    _enemy.Animator.SetBool("IsCircling", false);
+
   }
   private void StartIdleStance()
   {
@@ -78,17 +80,16 @@ public class CombatMovementState : State<EnemyController>
     _timer = Random.Range(_idleTimeRange.x, _idleTimeRange.y);
     
     _enemy.Animator.SetBool("IsCombatMode", true);
-    _enemy.Animator.SetBool("IsCircling", false);
+
   }
   private void StartCirclingStance()
   {
     _stance = ECombatStance.Circling;
+    
+    _enemy.NavAgent.ResetPath();
     _timer = Random.Range(_circlingTimeRange.x, _circlingTimeRange.y);
 
     _circlingDir = Random.Range(0, 2) == 0 ? 1 : -1;
-    
-    _enemy.Animator.SetBool("IsCircling", true);
-    _enemy.Animator.SetFloat("circlingDir", _circlingDir);
   }
 }
 
