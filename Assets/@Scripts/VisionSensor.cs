@@ -6,7 +6,11 @@ using UnityEngine;
 public class VisionSensor : MonoBehaviour
 {
   [SerializeField] private EnemyController _enemy;
-  
+
+  private void Awake()
+  {
+    _enemy.VisionSensor = this;
+  }
   private void OnTriggerEnter(Collider other)
   {
     var fighter = other.GetComponent<MeeleCombat>();

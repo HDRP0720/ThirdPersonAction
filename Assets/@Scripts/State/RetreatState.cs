@@ -11,11 +11,15 @@ public class RetreatState : State<EnemyController>
   
   public override void Enter(EnemyController owner)
   {
+    base.Enter(owner);
+    
     _enemy = owner;
   }
   
   public override void Execute()
   {
+    base.Execute();
+    
     if (Vector3.Distance(_enemy.transform.position, _enemy.Target.transform.position) >= _distanceToRetreat)
     {
       _enemy.ChangeState(EEnemyStates.CombatMovement);

@@ -8,11 +8,13 @@ public class IdleState : State<EnemyController>
   
   public override void Enter(EnemyController owner)
   {
+    base.Enter(owner);
     _enemy = owner;
   }
 
   public override void Execute()
   {
+    base.Execute();
     foreach (var target in _enemy.TargetsInRange)
     {
       var vecToTarget = target.transform.position - transform.position;
@@ -28,6 +30,6 @@ public class IdleState : State<EnemyController>
 
   public override void Exit()
   {
-
+    base.Exit();
   }
 }

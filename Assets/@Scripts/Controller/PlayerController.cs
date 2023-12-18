@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
   {
     if (_meeleCombat.IsInAction)
     {
+      _targetRotation = transform.rotation;
       _animator.SetFloat(MoveAmount, 0f);
       return;
     }

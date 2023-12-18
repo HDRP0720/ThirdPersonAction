@@ -16,7 +16,6 @@ public class EnemyManager : MonoBehaviour
   {
     Instance = this;
   }
-
   private void Update()
   {
     if (_enemiesInRange.Count == 0) return;
@@ -43,6 +42,11 @@ public class EnemyManager : MonoBehaviour
   public void RemoveEnemyInRange(EnemyController enemy)
   {
     _enemiesInRange.Remove(enemy);
+  }
+
+  public EnemyController GetAttackingEnemy()
+  {
+    return _enemiesInRange.FirstOrDefault(e => e.IsInState(EEnemyStates.Attack));
   }
 
   private EnemyController SelectEnemyForAttack()

@@ -78,4 +78,3 @@ crashlytics-build.properties
 # Licensed Asset
 /Assets/@Resources/Animations
 /Assets/LicensedAssets
-/Packages/com.singularitygroup.hotreload

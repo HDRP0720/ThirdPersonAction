@@ -16,8 +16,10 @@ public class MeeleCombat : MonoBehaviour
   // Property
   public bool IsInAction { get; private set; } = false;
   public EAttackStance AttackStance { get; private set; }
+  public bool IsInCounter { get; set; } = false;
   
   public List<AttackData> GetAttackData => _attackData;
+  public bool CanCounter => AttackStance == EAttackStance.Windup && _comboCount == 0;
 
   private static readonly int Hit_Fwd = Animator.StringToHash("Hit_Fwd");
 
@@ -77,6 +79,8 @@ public class MeeleCombat : MonoBehaviour
 
       if (AttackStance == EAttackStance.Windup)
       {
+        if (IsInCounter) break;
+          
         if (normalizedTime >= _attackData[_comboCount].ImpactStartTime)
         {
           AttackStance = EAttackStance.Impact;
@@ -93,7 +97,6 @@ public class MeeleCombat : MonoBehaviour
       }
       else if (AttackStance == EAttackStance.Cooldown)
       {
-        // TODO: Handle combo attack
         if (_isInCombo)
         {
           _isInCombo = false;
@@ -124,6 +127,46 @@ public class MeeleCombat : MonoBehaviour
 
     IsInAction = false;
   }
+  
+  public IEnumerator CoPerformCounterAttack(EnemyController opponent)
+  {
+    IsInAction = true;
+    
+    IsInCounter = true;
+    opponent.MeeleCombat.IsInCounter = true;
+    opponent.ChangeState(EEnemyStates.Dead);
+    
+    // 카운터 어택 세트 애니메이션 플레이 직전, 플레이어 & 에너미 회전 방향 맞춰주기
+    var vecToEnemyDir = opponent.transform.position - transform.position;
+    vecToEnemyDir.y = 0f;
+    transform.rotation = Quaternion.LookRotation(vecToEnemyDir);
+    opponent.transform.rotation = Quaternion.LookRotation(-vecToEnemyDir);
+    
+    //
+    var targetPos = opponent.transform.position - vecToEnemyDir.normalized * 1f;
+    
+    _animator.CrossFade("CounterAttack", 0.2f);
+    opponent.Animator.CrossFade("CounterAttackVictim", 0.2f);
+    
+    yield return null;
+    
+    var animState = _animator.GetNextAnimatorStateInfo(1);
+
+    float timer = 0f;
+    while (timer <= animState.length)
+    {
+      transform.position = Vector3.MoveTowards(transform.position, targetPos, 5 * Time.deltaTime);
+
+      yield return null;
+
+      timer += Time.deltaTime;
+    }
+    
+    IsInCounter = false;
+    opponent.MeeleCombat.IsInCounter = false;
+
+    IsInAction = false;
+  }
 
   private void EnableHitboxCollider(AttackData attackData)
   {
@@ -148,7 +191,7 @@ public class MeeleCombat : MonoBehaviour
         break;
     }
   }
-  private void DisableAllHitboxColliders()
+  public void DisableAllHitboxColliders()
   {
     _weaponCollider.enabled = false;
     _leftHandCollider.enabled = false;

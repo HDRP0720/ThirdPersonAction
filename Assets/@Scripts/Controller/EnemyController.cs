@@ -12,9 +12,11 @@ public class EnemyController : MonoBehaviour
   private Dictionary<EEnemyStates, State<EnemyController>> _stateDict;
   
   // Auto-Property
+  public CharacterController CharacterController { get; private set; } 
   public NavMeshAgent NavAgent { get; private set; }
   public Animator Animator { get; private set; }
   public MeeleCombat MeeleCombat { get; private set; }
+  public VisionSensor VisionSensor { get; set; }
   public StateMachine<EnemyController> StateMachine { get; private set; }
   public List<MeeleCombat> TargetsInRange { get; set; } = new List<MeeleCombat>();
   public float CombatMovementTimer { get; set; } = 0f;
@@ -24,6 +26,7 @@ public class EnemyController : MonoBehaviour
 
   private void Start()
   {
+    CharacterController = GetComponent<CharacterController>();
     NavAgent = GetComponent<NavMeshAgent>();
     Animator = GetComponent<Animator>();
     MeeleCombat = GetComponent<MeeleCombat>();
@@ -34,7 +37,8 @@ public class EnemyController : MonoBehaviour
       [EEnemyStates.Idle] = GetComponent<IdleState>(),
       [EEnemyStates.CombatMovement] = GetComponent<CombatMovementState>(),
       [EEnemyStates.Attack] = GetComponent<AttackState>(),
-      [EEnemyStates.Retreat] = GetComponent<RetreatState>()
+      [EEnemyStates.Retreat] = GetComponent<RetreatState>(),
+      [EEnemyStates.Dead] = GetComponent<DeadState>(),
     };
   
     StateMachine.ChangeState(_stateDict[EEnemyStates.Idle]);
@@ -68,4 +72,4 @@ public class EnemyController : MonoBehaviour
   }
 }
 
-public enum EEnemyStates { Idle, CombatMovement, Attack, Retreat }
+public enum EEnemyStates { Idle, CombatMovement, Attack, Retreat, Dead }

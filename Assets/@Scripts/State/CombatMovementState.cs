@@ -15,6 +15,7 @@ public class CombatMovementState : State<EnemyController>
   
   public override void Enter(EnemyController owner)
   {
+    base.Enter(owner);
     _enemy = owner;
 
     _enemy.NavAgent.stoppingDistance = _distanceToStop;
@@ -23,6 +24,8 @@ public class CombatMovementState : State<EnemyController>
 
   public override void Execute()
   {
+    base.Execute();
+    
     if(_timer > 0)
       _timer -= Time.deltaTime;
     
@@ -66,6 +69,8 @@ public class CombatMovementState : State<EnemyController>
 
   public override void Exit()
   {
+    base.Exit();
+    
     _enemy.CombatMovementTimer = 0f;
   }
 

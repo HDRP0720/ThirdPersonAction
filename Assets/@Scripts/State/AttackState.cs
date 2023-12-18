@@ -11,12 +11,16 @@ public class AttackState : State<EnemyController>
   
   public override void Enter(EnemyController owner)
   {
+    base.Enter(owner);
+    
     _enemy = owner;
     
     _enemy.NavAgent.stoppingDistance = _distanceToAttack;
   }
   public override void Execute()
   {
+    base.Execute();
+    
     if (_isAttacking) return;
     
     _enemy.NavAgent.SetDestination(_enemy.Target.transform.position);
@@ -28,6 +32,8 @@ public class AttackState : State<EnemyController>
   }
   public override void Exit()
   {
+    base.Exit();
+    
     _enemy.NavAgent.ResetPath();
   }
 
@@ -49,6 +55,7 @@ public class AttackState : State<EnemyController>
     _enemy.Animator.applyRootMotion = false;
     _isAttacking = false;
     
-    _enemy.ChangeState(EEnemyStates.Retreat);
+    if(_enemy.IsInState(EEnemyStates.Attack))
+      _enemy.ChangeState(EEnemyStates.Retreat);
   }
 }
