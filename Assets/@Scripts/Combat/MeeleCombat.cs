@@ -1,13 +1,11 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class MeeleCombat : MonoBehaviour
 {
   [SerializeField] private GameObject _weapon;
-  [SerializeField] private List<AttackData> _attackDatas;
+  [SerializeField] private List<AttackData> _attackData;
   
   private Animator _animator;
   private BoxCollider _weaponCollider;
@@ -18,6 +16,8 @@ public class MeeleCombat : MonoBehaviour
   // Property
   public bool IsInAction { get; private set; } = false;
   public EAttackStance AttackStance { get; private set; }
+  
+  public List<AttackData> GetAttackData => _attackData;
 
   private static readonly int Hit_Fwd = Animator.StringToHash("Hit_Fwd");
 
@@ -64,7 +64,7 @@ public class MeeleCombat : MonoBehaviour
     IsInAction = true;
     AttackStance = EAttackStance.Windup;
     
-    _animator.CrossFade(_attackDatas[_comboCount].AnimName, 0.2f);
+    _animator.CrossFade(_attackData[_comboCount].AnimName, 0.2f);
     yield return null;
     
     var animState = _animator.GetNextAnimatorStateInfo(1);
@@ -77,15 +77,15 @@ public class MeeleCombat : MonoBehaviour
 
       if (AttackStance == EAttackStance.Windup)
       {
-        if (normalizedTime >= _attackDatas[_comboCount].ImpactStartTime)
+        if (normalizedTime >= _attackData[_comboCount].ImpactStartTime)
         {
           AttackStance = EAttackStance.Impact;
-          EnableHitboxCollider(_attackDatas[_comboCount]);
+          EnableHitboxCollider(_attackData[_comboCount]);
         }
       }
       else if (AttackStance == EAttackStance.Impact)
       {
-        if (normalizedTime >= _attackDatas[_comboCount].ImpactEndTime)
+        if (normalizedTime >= _attackData[_comboCount].ImpactEndTime)
         {
           AttackStance = EAttackStance.Cooldown;
           DisableAllHitboxColliders();
@@ -97,7 +97,7 @@ public class MeeleCombat : MonoBehaviour
         if (_isInCombo)
         {
           _isInCombo = false;
-          _comboCount = (_comboCount + 1) % _attackDatas.Count;
+          _comboCount = (_comboCount + 1) % _attackData.Count;
 
           StartCoroutine(CoAttack());
           yield break;

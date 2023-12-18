@@ -798,7 +798,7 @@ MonoBehaviour:
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: f31de7d7fb740194b8b8f8431d8ce6bf, type: 2}
-  m_BuildHeightMesh: 0
+  m_BuildHeightMesh: 1
 --- !u!1 &1354459354 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7057402844384170735, guid: 2174b7c0d515d9c4bb5ff2ccf89e280c,
@@ -942,7 +942,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _weapon: {fileID: 310027641}
-  _attackDatas:
+  _attackData:
   - {fileID: 11400000, guid: fa3648b57d9a1fd45a73d37abc0b8ae1, type: 2}
   - {fileID: 11400000, guid: fce286f33dc129343b1075f8dc976310, type: 2}
   - {fileID: 11400000, guid: 8f84fc4d7399fd04b819cbba31297e1e, type: 2}

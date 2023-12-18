@@ -23,7 +23,7 @@ public class AttackState : State<EnemyController>
 
     if (Vector3.Distance(_enemy.Target.transform.position, _enemy.transform.position) <= _distanceToAttack + 0.03f)
     {
-      StartCoroutine(CoAttack());
+      StartCoroutine(CoAttack(Random.Range(0, _enemy.MeeleCombat.GetAttackData.Count + 1)));
     }
   }
   public override void Exit()
@@ -31,12 +31,19 @@ public class AttackState : State<EnemyController>
     _enemy.NavAgent.ResetPath();
   }
 
-  private IEnumerator CoAttack()
+  private IEnumerator CoAttack(int comboCount=1)
   {
     _isAttacking = true;
     _enemy.Animator.applyRootMotion = true;
     
     _enemy.MeeleCombat.TryToAttack();
+    
+    for (int i = 0; i < comboCount; i++)
+    {
+      yield return new WaitUntil(() => _enemy.MeeleCombat.AttackStance == EAttackStance.Cooldown);
+      _enemy.MeeleCombat.TryToAttack();
+    }
+    
     yield return new WaitUntil(() => _enemy.MeeleCombat.AttackStance == EAttackStance.Idle);
 
     _enemy.Animator.applyRootMotion = false;

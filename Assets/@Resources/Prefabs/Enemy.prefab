@@ -1366,9 +1366,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _weapon: {fileID: 6133027906640756055}
-  _attackDatas:
+  _attackData:
   - {fileID: 11400000, guid: fa3648b57d9a1fd45a73d37abc0b8ae1, type: 2}
   - {fileID: 11400000, guid: fce286f33dc129343b1075f8dc976310, type: 2}
+  - {fileID: 11400000, guid: 8f84fc4d7399fd04b819cbba31297e1e, type: 2}
 --- !u!114 &849845515102157196
 MonoBehaviour:
   m_ObjectHideFlags: 0

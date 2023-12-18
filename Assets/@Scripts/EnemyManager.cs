@@ -28,8 +28,6 @@ public class EnemyManager : MonoBehaviour
 
       if (_notAttackingTimer <= 0)
       {
-        // TODO: One of enemies attacks the player
-        // select one enemy -> change to attack state
         var attackingEnemy = SelectEnemyForAttack();
         attackingEnemy.ChangeState(EEnemyStates.Attack);
         _notAttackingTimer = Random.Range(_timeRangeBetweenAttacks.x, _timeRangeBetweenAttacks.y);
