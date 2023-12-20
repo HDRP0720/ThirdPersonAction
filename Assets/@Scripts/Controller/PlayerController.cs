@@ -17,11 +17,13 @@ public class PlayerController : MonoBehaviour
   private CharacterController _cc;
   private Animator _animator;
   private MeeleCombat _meeleCombat;
+  private CombatController _combatController;
 
   private bool _isGrounded;
   private float _ySpeed;
   
-  private static readonly int MoveAmount = Animator.StringToHash("moveAmount");
+  private static readonly int ForwardSpeed = Animator.StringToHash("forwardSpeed");
+  private static readonly int StrafeSpeed = Animator.StringToHash("strafeSpeed");
 
   private void Awake()
   {
@@ -31,13 +33,14 @@ public class PlayerController : MonoBehaviour
     _cc = GetComponent<CharacterController>();
     _animator = GetComponent<Animator>();
     _meeleCombat = GetComponent<MeeleCombat>();
+    _combatController = GetComponent<CombatController>();
   }
   private void Update()
   {
     if (_meeleCombat.IsInAction)
     {
       _targetRotation = transform.rotation;
-      _animator.SetFloat(MoveAmount, 0f);
+      _animator.SetFloat(ForwardSpeed, 0f);
       return;
     }
     
@@ -57,17 +60,39 @@ public class PlayerController : MonoBehaviour
       _ySpeed += Physics.gravity.y * Time.deltaTime;
 
     var velocity = moveDir * _moveSpeed;
-    velocity.y = _ySpeed;
     
-    _cc.Move(velocity * Time.deltaTime);
-    
-    if (moveAmount > 0)
+    // 전투 또는 에너미 타겟이 설정되면 Lock-On 모드로 변경
+    if (_combatController.IsCombatMode)
     {
-      _targetRotation = Quaternion.LookRotation(moveDir);
-    }
+      velocity /= 4f;
+      
+      var targetVec = _combatController.TargetEnemy.transform.position - transform.position;
+      targetVec.y = 0f;
 
-    transform.rotation = Quaternion.RotateTowards(transform.rotation, _targetRotation, _rotationSpeed * Time.deltaTime);
-    _animator.SetFloat(MoveAmount, moveAmount, 0.2f, Time.deltaTime);
+      if (moveAmount > 0)
+      {
+        _targetRotation = Quaternion.LookRotation(targetVec);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, _targetRotation, _rotationSpeed * Time.deltaTime);
+      }
+    
+      float forwardSpeed = Vector3.Dot(velocity, transform.forward);
+      _animator.SetFloat(ForwardSpeed, forwardSpeed / _moveSpeed, 0.2f, Time.deltaTime);
+
+      float angle = Vector3.SignedAngle(transform.forward, velocity, Vector3.up);
+      float strafeSpeed = Mathf.Sin(angle * Mathf.Deg2Rad);
+      _animator.SetFloat(StrafeSpeed, strafeSpeed, 0.2f, Time.deltaTime);
+    }
+    else
+    {
+      if (moveAmount > 0)
+        _targetRotation = Quaternion.LookRotation(moveDir);
+
+      transform.rotation = Quaternion.RotateTowards(transform.rotation, _targetRotation, _rotationSpeed * Time.deltaTime);
+      _animator.SetFloat(ForwardSpeed, moveAmount, 0.2f, Time.deltaTime);
+    }
+    
+    velocity.y = _ySpeed;
+    _cc.Move(velocity * Time.deltaTime);
   }
   
   private void CheckGround()

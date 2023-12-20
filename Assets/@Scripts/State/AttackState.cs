@@ -26,14 +26,10 @@ public class AttackState : State<EnemyController>
     _enemy.NavAgent.SetDestination(_enemy.Target.transform.position);
 
     if (Vector3.Distance(_enemy.Target.transform.position, _enemy.transform.position) <= _distanceToAttack + 0.03f)
-    {
       StartCoroutine(CoAttack(Random.Range(0, _enemy.MeeleCombat.GetAttackData.Count + 1)));
-    }
   }
   public override void Exit()
   {
-    base.Exit();
-    
     _enemy.NavAgent.ResetPath();
   }
 

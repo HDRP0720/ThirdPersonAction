@@ -15,11 +15,12 @@ public class CombatMovementState : State<EnemyController>
   
   public override void Enter(EnemyController owner)
   {
-    base.Enter(owner);
     _enemy = owner;
 
     _enemy.NavAgent.stoppingDistance = _distanceToStop;
     _enemy.CombatMovementTimer = 0f;
+    
+    _enemy.Animator.SetBool("IsCombatMode", true);
   }
 
   public override void Execute()
@@ -77,16 +78,11 @@ public class CombatMovementState : State<EnemyController>
   private void StartChaseStance()
   {
     _stance = ECombatStance.Chase;
-    _enemy.Animator.SetBool("IsCombatMode", false);
-
   }
   private void StartIdleStance()
   {
     _stance = ECombatStance.Idle;
     _timer = Random.Range(_idleTimeRange.x, _idleTimeRange.y);
-    
-    _enemy.Animator.SetBool("IsCombatMode", true);
-
   }
   private void StartCirclingStance()
   {

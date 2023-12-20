@@ -8,9 +8,9 @@ public class SkinnedMeshHighlighter : MonoBehaviour
   [SerializeField] private Material _originalMaterial;
   [SerializeField] private Material _highlightMaterial;
 
-  public void HighlightMesh(bool highlight)
+  public void HighlightMesh(bool isHighlight)
   {
     foreach (var mesh in _meshesToHighlight)
-      mesh.material = (highlight) ? _highlightMaterial : _originalMaterial;
+      mesh.material = (isHighlight) ? _highlightMaterial : _originalMaterial;
   }
 }

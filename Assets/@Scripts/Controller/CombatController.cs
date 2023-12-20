@@ -2,14 +2,42 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class CombatController : MonoBehaviour
 {
-  public EnemyController targetEnemy;
-  
   private CameraController _cameraController;
   private MeeleCombat _meeleCombat;
   private Animator _animator;
+
+  private EnemyController _targetEnemy;
+  private bool _isCombatMode;
+
+  // Property
+  public EnemyController TargetEnemy
+  {
+    get => _targetEnemy;
+    set
+    {
+      _targetEnemy = value;
+
+      if (_targetEnemy == null)
+        IsCombatMode = false;
+    }
+  }
+  public bool IsCombatMode
+  {
+    get => _isCombatMode;
+    set
+    {
+      _isCombatMode = value;
+
+      if (TargetEnemy == null)
+        _isCombatMode = false;
+      
+      _animator.SetBool("IsCombatMode", _isCombatMode);
+    }
+  }
 
   private void Awake()
   {
@@ -31,7 +59,13 @@ public class CombatController : MonoBehaviour
       else
       {
         _meeleCombat.TryToAttack();
+        IsCombatMode = true;
       }
+    }
+
+    if (Input.GetButtonDown("LockOn"))
+    {
+      IsCombatMode = !IsCombatMode;
     }
   }
   
