@@ -5,11 +5,17 @@ using UnityEngine;
 
 public class CombatController : MonoBehaviour
 {
+  public EnemyController targetEnemy;
+  
+  private CameraController _cameraController;
   private MeeleCombat _meeleCombat;
   private Animator _animator;
 
   private void Awake()
   {
+    if (Camera.main != null) 
+      _cameraController = Camera.main.GetComponent<CameraController>();
+    
     _meeleCombat = GetComponent<MeeleCombat>();
     _animator = GetComponent<Animator>();
   }
@@ -36,5 +42,13 @@ public class CombatController : MonoBehaviour
       transform.position += _animator.deltaPosition;
     
     transform.rotation *= _animator.deltaRotation;
+  }
+
+  public Vector3 GetTargetingDir()
+  {
+    var vecFromCam = transform.position - _cameraController.transform.position;
+    vecFromCam.y = 0f;
+
+    return vecFromCam.normalized;
   }
 }

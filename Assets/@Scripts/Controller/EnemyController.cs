@@ -12,9 +12,10 @@ public class EnemyController : MonoBehaviour
   private Dictionary<EEnemyStates, State<EnemyController>> _stateDict;
   
   // Auto-Property
+  public Animator Animator { get; private set; }
   public CharacterController CharacterController { get; private set; } 
   public NavMeshAgent NavAgent { get; private set; }
-  public Animator Animator { get; private set; }
+  public SkinnedMeshHighlighter MeshHighlighter { get; private set; }
   public MeeleCombat MeeleCombat { get; private set; }
   public VisionSensor VisionSensor { get; set; }
   public StateMachine<EnemyController> StateMachine { get; private set; }
@@ -26,9 +27,11 @@ public class EnemyController : MonoBehaviour
 
   private void Start()
   {
+    Animator = GetComponent<Animator>();
     CharacterController = GetComponent<CharacterController>();
     NavAgent = GetComponent<NavMeshAgent>();
-    Animator = GetComponent<Animator>();
+
+    MeshHighlighter = GetComponent<SkinnedMeshHighlighter>();
     MeeleCombat = GetComponent<MeeleCombat>();
     StateMachine = new StateMachine<EnemyController>(this);
     

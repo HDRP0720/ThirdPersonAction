@@ -8,9 +8,11 @@ public class EnemyManager : MonoBehaviour
   public static EnemyManager Instance { get; private set; }
 
   [SerializeField] private Vector2 _timeRangeBetweenAttacks = new Vector2(1, 4);
+  [SerializeField] private CombatController _player;
   
   private List<EnemyController> _enemiesInRange = new List<EnemyController>();
   private float _notAttackingTimer = 2f;
+  private float _findTargetTimer = 0f;
 
   private void Awake()
   {
@@ -28,10 +30,32 @@ public class EnemyManager : MonoBehaviour
       if (_notAttackingTimer <= 0)
       {
         var attackingEnemy = SelectEnemyForAttack();
-        attackingEnemy.ChangeState(EEnemyStates.Attack);
-        _notAttackingTimer = Random.Range(_timeRangeBetweenAttacks.x, _timeRangeBetweenAttacks.y);
+        if (attackingEnemy != null)
+        {
+          attackingEnemy.ChangeState(EEnemyStates.Attack);
+          _notAttackingTimer = Random.Range(_timeRangeBetweenAttacks.x, _timeRangeBetweenAttacks.y);
+        }
       }
     }
+
+    if (_findTargetTimer > 0.1f)
+    {
+      _findTargetTimer = 0f;
+      var closestEnemy = GetClosestEnemyToPlayerDir();
+      if (closestEnemy != null && closestEnemy != _player.targetEnemy)
+      {
+        var prevEnemy = _player.targetEnemy;
+        _player.targetEnemy = closestEnemy;
+        
+        if(_player.targetEnemy != null)
+          _player.targetEnemy.MeshHighlighter.HighlightMesh(true);
+        
+        if(prevEnemy != null)
+          prevEnemy.MeshHighlighter.HighlightMesh(false);
+      }
+    }
+    
+    _findTargetTimer += Time.deltaTime;
   }
 
   public void AddEnemyInRange(EnemyController enemy)
@@ -52,6 +76,30 @@ public class EnemyManager : MonoBehaviour
   private EnemyController SelectEnemyForAttack()
   {
     // 에너미 숫자가 기하급수적으로 많아지는 경우엔 최적화에 좋지 못함 (For-loop등으로 자체 구현 필요)
-    return _enemiesInRange.OrderByDescending(e => e.CombatMovementTimer).FirstOrDefault();
+    return _enemiesInRange.OrderByDescending(e => e.CombatMovementTimer).FirstOrDefault(e => e.Target != null);
+  }
+
+  public EnemyController GetClosestEnemyToPlayerDir()
+  {
+    var targetingDir = _player.GetTargetingDir();
+    float minDistance = Mathf.Infinity;
+    EnemyController cloestEnemy = null;
+
+    foreach (var enemy in _enemiesInRange)
+    {
+      var vecToEnemy = enemy.transform.position - _player.transform.position;
+      vecToEnemy.y = 0f;
+      
+      var angle = Vector3.Angle(targetingDir, vecToEnemy);
+      float distance = vecToEnemy.magnitude * Mathf.Sin(angle * Mathf.Deg2Rad);
+
+      if (distance < minDistance)
+      {
+        minDistance = distance;
+        cloestEnemy = enemy;
+      }
+    }
+
+    return cloestEnemy;
   }
 }
