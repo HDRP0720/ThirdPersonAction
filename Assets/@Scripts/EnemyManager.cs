@@ -41,7 +41,7 @@ public class EnemyManager : MonoBehaviour
     if (_findTargetTimer > 0.1f)
     {
       _findTargetTimer = 0f;
-      var closestEnemy = GetClosestEnemyToPlayerDir();
+      var closestEnemy = GetClosestEnemyInDirection(_player.GetTargetingDir());
       if (closestEnemy != null && closestEnemy != _player.TargetEnemy)
       {
         var prevEnemy = _player.TargetEnemy;
@@ -70,7 +70,7 @@ public class EnemyManager : MonoBehaviour
     if (enemy == _player.TargetEnemy)
     {
       enemy.MeshHighlighter.HighlightMesh(false);
-      _player.TargetEnemy = GetClosestEnemyToPlayerDir();
+      _player.TargetEnemy = GetClosestEnemyInDirection(_player.GetTargetingDir());
       
       if(_player.TargetEnemy != null)
         _player.TargetEnemy.MeshHighlighter.HighlightMesh(true);
@@ -88,27 +88,26 @@ public class EnemyManager : MonoBehaviour
     return _enemiesInRange.OrderByDescending(e => e.CombatMovementTimer).FirstOrDefault(e => e.Target != null);
   }
 
-  public EnemyController GetClosestEnemyToPlayerDir()
+  public EnemyController GetClosestEnemyInDirection(Vector3 dir)
   {
-    var targetingDir = _player.GetTargetingDir();
     float minDistance = Mathf.Infinity;
-    EnemyController cloestEnemy = null;
+    EnemyController closestEnemy = null;
 
     foreach (var enemy in _enemiesInRange)
     {
       var vecToEnemy = enemy.transform.position - _player.transform.position;
       vecToEnemy.y = 0f;
       
-      var angle = Vector3.Angle(targetingDir, vecToEnemy);
+      var angle = Vector3.Angle(dir, vecToEnemy);
       float distance = vecToEnemy.magnitude * Mathf.Sin(angle * Mathf.Deg2Rad);
 
       if (distance < minDistance)
       {
         minDistance = distance;
-        cloestEnemy = enemy;
+        closestEnemy = enemy;
       }
     }
 
-    return cloestEnemy;
+    return closestEnemy;
   }
 }

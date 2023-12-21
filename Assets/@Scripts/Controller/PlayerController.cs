@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+  public static PlayerController Instance { get; private set; }
+  
   [SerializeField] private float _moveSpeed = 5f;
   [SerializeField] private float _rotationSpeed = 500f;
   
@@ -22,11 +24,17 @@ public class PlayerController : MonoBehaviour
   private bool _isGrounded;
   private float _ySpeed;
   
+  // Property
+  public Vector3 InputDir { get; private set; }
+  
+  // For Animation parameters
   private static readonly int ForwardSpeed = Animator.StringToHash("forwardSpeed");
   private static readonly int StrafeSpeed = Animator.StringToHash("strafeSpeed");
 
   private void Awake()
   {
+    Instance = this;
+    
     if (Camera.main != null) 
       _cameraController = Camera.main.GetComponent<CameraController>();
     
@@ -51,6 +59,7 @@ public class PlayerController : MonoBehaviour
 
     var moveInput = new Vector3(h, 0, v).normalized;
     var moveDir = _cameraController.GetPlanarRotation * moveInput;
+    InputDir = moveDir;
     
     CheckGround();
 

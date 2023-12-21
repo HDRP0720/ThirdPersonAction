@@ -58,7 +58,12 @@ public class CombatController : MonoBehaviour
       }
       else
       {
-        _meeleCombat.TryToAttack();
+        var enemyToAttack = EnemyManager.Instance.GetClosestEnemyInDirection(PlayerController.Instance.InputDir);
+        Vector3? dirToAttack = null;
+        if (enemyToAttack != null)
+          dirToAttack = enemyToAttack.transform.position - transform.position;
+        
+        _meeleCombat.TryToAttack(dirToAttack);
         IsCombatMode = true;
       }
     }
@@ -80,6 +85,8 @@ public class CombatController : MonoBehaviour
 
   public Vector3 GetTargetingDir()
   {
+    if (IsCombatMode) return transform.forward;
+    
     var vecFromCam = transform.position - _cameraController.transform.position;
     vecFromCam.y = 0f;
 

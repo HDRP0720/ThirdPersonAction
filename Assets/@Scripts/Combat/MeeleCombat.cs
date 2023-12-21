@@ -6,6 +6,7 @@ public class MeeleCombat : MonoBehaviour
 {
   [SerializeField] private GameObject _weapon;
   [SerializeField] private List<AttackData> _attackData;
+  [SerializeField] private float _rotationSpeed = 500f;
   
   private Animator _animator;
   private BoxCollider _weaponCollider;
@@ -44,16 +45,15 @@ public class MeeleCombat : MonoBehaviour
   {
     if (other.CompareTag("Hitbox") && !IsInAction)
     {
-      StartCoroutine(CoPlayHitReaction());
-      Debug.Log($"{this.gameObject.name} was hit!!");
+      StartCoroutine(CoPlayHitReaction(other.GetComponentInParent<MeeleCombat>().transform));
     }
   }
 
-  public void TryToAttack()
+  public void TryToAttack(Vector3? attackDir = null)
   {
     if (!IsInAction)
     {
-      StartCoroutine(CoAttack());
+      StartCoroutine(CoAttack(attackDir));
     }
     else if (AttackStance == EAttackStance.Impact || AttackStance == EAttackStance.Cooldown)
     {
@@ -61,7 +61,7 @@ public class MeeleCombat : MonoBehaviour
     }
   }
 
-  private IEnumerator CoAttack()
+  private IEnumerator CoAttack(Vector3? attackDir = null)
   {
     IsInAction = true;
     AttackStance = EAttackStance.Windup;
@@ -76,6 +76,13 @@ public class MeeleCombat : MonoBehaviour
     {
       timer += Time.deltaTime;
       float normalizedTime = timer / animState.length;
+
+      if (attackDir != null)
+      {
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(attackDir.Value),
+          _rotationSpeed * Time.deltaTime);
+        
+      }
 
       if (AttackStance == EAttackStance.Windup)
       {
@@ -115,9 +122,15 @@ public class MeeleCombat : MonoBehaviour
     IsInAction = false;
   }
   
-  private IEnumerator CoPlayHitReaction()
+  private IEnumerator CoPlayHitReaction(Transform attacker)
   {
     IsInAction = true;
+    
+    // 맞는 방향에 맞게 캐릭터를 회전
+    var hitDir = attacker.position - transform.position;
+    hitDir.y = 0f;
+    transform.rotation = Quaternion.LookRotation(hitDir);
+    
     _animator.CrossFade(Hit_Fwd, 0.2f);
     yield return null;
     
