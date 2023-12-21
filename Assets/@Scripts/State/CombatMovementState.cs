@@ -26,6 +26,17 @@ public class CombatMovementState : State<EnemyController>
   public override void Execute()
   {
     base.Execute();
+
+    if (_enemy.Target == null)
+    {
+      _enemy.Target = _enemy.FindTarget();
+      if (_enemy.Target == null)
+      {
+        _enemy.ChangeState(EEnemyStates.Idle);
+        return;
+      }
+    }
+
     
     if(_timer > 0)
       _timer -= Time.deltaTime;

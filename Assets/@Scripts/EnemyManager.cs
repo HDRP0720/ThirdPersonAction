@@ -85,7 +85,7 @@ public class EnemyManager : MonoBehaviour
   private EnemyController SelectEnemyForAttack()
   {
     // 에너미 숫자가 기하급수적으로 많아지는 경우엔 최적화에 좋지 못함 (For-loop등으로 자체 구현 필요)
-    return _enemiesInRange.OrderByDescending(e => e.CombatMovementTimer).FirstOrDefault(e => e.Target != null);
+    return _enemiesInRange.OrderByDescending(e => e.CombatMovementTimer).FirstOrDefault(e => e.Target != null && e.IsInState(EEnemyStates.CombatMovement));
   }
 
   public EnemyController GetClosestEnemyInDirection(Vector3 dir)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,10 @@ public class MeeleCombat : MonoBehaviour
   private SphereCollider _leftHandCollider, _rightHandCollider, _leftFootCollider, _rightFootCollider;
   private bool _isInCombo;
   private int _comboCount = 0;
+  
+  // Delegate
+  public event Action OnHitState;
+  public event Action OnHitComplete;
   
   // Property
   public bool IsInAction { get; private set; } = false;
@@ -130,14 +135,16 @@ public class MeeleCombat : MonoBehaviour
     var hitDir = attacker.position - transform.position;
     hitDir.y = 0f;
     transform.rotation = Quaternion.LookRotation(hitDir);
-    
+
+    OnHitState?.Invoke();
     _animator.CrossFade(Hit_Fwd, 0.2f);
     yield return null;
     
     var animState = _animator.GetNextAnimatorStateInfo(1);
     
     yield return new WaitForSeconds(animState.length * 0.8f);
-
+    
+    OnHitComplete?.Invoke();
     IsInAction = false;
   }
   

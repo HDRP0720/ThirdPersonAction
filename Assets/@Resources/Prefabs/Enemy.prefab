@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 4398600749738711004}
   - component: {fileID: 2483201994681596478}
   - component: {fileID: 6064386743624328562}
+  - component: {fileID: 8633568037814247716}
   - component: {fileID: 8100916202073169956}
   m_Layer: 8
   m_Name: Enemy
@@ -146,6 +147,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fa3648b57d9a1fd45a73d37abc0b8ae1, type: 2}
   - {fileID: 11400000, guid: fce286f33dc129343b1075f8dc976310, type: 2}
   - {fileID: 11400000, guid: 8f84fc4d7399fd04b819cbba31297e1e, type: 2}
+  _rotationSpeed: 500
 --- !u!114 &6429185988927369916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -216,6 +218,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _backwardWalkSpeed: 1.5
   _distanceToRetreat: 3
+--- !u!114 &8633568037814247716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4142724513728193956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7ed421091a5f6f47ac225005e9a8baf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stunnTime: 0.5
 --- !u!114 &8100916202073169956
 MonoBehaviour:
   m_ObjectHideFlags: 0
