@@ -16,6 +16,7 @@ public class MeeleCombat : MonoBehaviour
   private SphereCollider _leftHandCollider, _rightHandCollider, _leftFootCollider, _rightFootCollider;
   private bool _isInCombo;
   private int _comboCount = 0;
+  private MeeleCombat _currentTarget;
   
   // Delegate
   public event Action OnHitState;
@@ -24,7 +25,7 @@ public class MeeleCombat : MonoBehaviour
   // Property
   public bool IsInAction { get; private set; } = false;
   public EAttackStance AttackStance { get; private set; }
-  public bool IsInCounter { get; set; } = false;
+  public bool IsInCounter { get; private set; } = false;
   
   public List<AttackData> GetAttackData => _attackData;
   public bool CanCounter => AttackStance == EAttackStance.Windup && _comboCount == 0;
@@ -52,7 +53,10 @@ public class MeeleCombat : MonoBehaviour
   {
     if (other.CompareTag("Hitbox") && !IsInAction)
     {
-      StartCoroutine(CoPlayHitReaction(other.GetComponentInParent<MeeleCombat>().transform));
+      var attacker = other.GetComponentInParent<MeeleCombat>();
+      if (attacker._currentTarget != this) return;
+        
+      StartCoroutine(CoPlayHitReaction(attacker.transform));
     }
   }
 
@@ -72,6 +76,7 @@ public class MeeleCombat : MonoBehaviour
   {
     IsInAction = true;
     AttackStance = EAttackStance.Windup;
+    _currentTarget = target;
 
     var attack = _attackData[_comboCount];
     var attackDir = transform.forward;
@@ -110,7 +115,10 @@ public class MeeleCombat : MonoBehaviour
       float normalizedTime = timer / animState.length;
 
       if (target != null && attack.CanMoveToTarget)
-        transform.position = Vector3.Lerp(startPos, targetPos, normalizedTime);
+      {
+        float percentageTime = (normalizedTime - attack.MoveStartTime) / (attack.MoveEndTime - attack.MoveStartTime);
+        transform.position = Vector3.Lerp(startPos, targetPos, percentageTime);
+      }
 
       if (attackDir != null)
       {
@@ -143,7 +151,7 @@ public class MeeleCombat : MonoBehaviour
           _isInCombo = false;
           _comboCount = (_comboCount + 1) % _attackData.Count;
 
-          StartCoroutine(CoAttack());
+          StartCoroutine(CoAttack(target));
           yield break;
         }
       }
@@ -154,6 +162,7 @@ public class MeeleCombat : MonoBehaviour
     AttackStance = EAttackStance.Idle;
     _comboCount = 0;
     IsInAction = false;
+    _currentTarget = null;
   }
   
   private IEnumerator CoPlayHitReaction(Transform attacker)

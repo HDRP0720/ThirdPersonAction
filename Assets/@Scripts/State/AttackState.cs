@@ -38,12 +38,12 @@ public class AttackState : State<EnemyController>
     _isAttacking = true;
     _enemy.Animator.applyRootMotion = true;
     
-    _enemy.MeeleCombat.TryToAttack();
+    _enemy.MeeleCombat.TryToAttack(_enemy.Target);
     
     for (int i = 0; i < comboCount; i++)
     {
       yield return new WaitUntil(() => _enemy.MeeleCombat.AttackStance == EAttackStance.Cooldown);
-      _enemy.MeeleCombat.TryToAttack();
+      _enemy.MeeleCombat.TryToAttack(_enemy.Target);
     }
     
     yield return new WaitUntil(() => _enemy.MeeleCombat.AttackStance == EAttackStance.Idle);

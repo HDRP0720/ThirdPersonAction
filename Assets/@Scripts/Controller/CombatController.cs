@@ -59,7 +59,7 @@ public class CombatController : MonoBehaviour
       else
       {
         var enemyToAttack = EnemyManager.Instance.GetClosestEnemyInDirection(PlayerController.Instance.InputDir);
-        _meeleCombat.TryToAttack(enemyToAttack.MeeleCombat);
+        _meeleCombat.TryToAttack(enemyToAttack?.MeeleCombat);
         
         IsCombatMode = true;
       }

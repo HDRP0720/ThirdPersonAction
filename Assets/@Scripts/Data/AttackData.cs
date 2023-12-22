@@ -21,6 +21,12 @@ public class AttackData : ScriptableObject
   
   [field: Tooltip("공격 모션 발동후 최대 이동 거리에 대한 설정")]
   [field: SerializeField] public float MaxMoveDistance { get; private set; } = 3f;
+  
+  [field: Tooltip("공격 모션 중 이동 시작 시간에 대한 설정")]
+  [field: SerializeField] public float MoveStartTime { get; private set; } = 0f;
+  
+  [field: Tooltip("공격 모션 중 이동 종료 시간에 대한 설정")]
+  [field: SerializeField] public float MoveEndTime { get; private set; } = 1f;
 }
 
 public enum EAttackHitbox {LeftHand, RightHand, LeftFoot, RightFoot, Weapon }
