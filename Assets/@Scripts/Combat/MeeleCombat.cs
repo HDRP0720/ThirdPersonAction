@@ -7,6 +7,8 @@ public class MeeleCombat : MonoBehaviour
 {
   [SerializeField] private GameObject _weapon;
   [SerializeField] private List<AttackData> _attackData;
+  [SerializeField] private List<AttackData> _longRageAttackDatas;
+  [SerializeField] private float _longRangeAttackThreshold = 1.5f;
   [SerializeField] private float _rotationSpeed = 500f;
   
   private Animator _animator;
@@ -54,11 +56,11 @@ public class MeeleCombat : MonoBehaviour
     }
   }
 
-  public void TryToAttack(Vector3? attackDir = null)
+  public void TryToAttack(MeeleCombat target = null)
   {
     if (!IsInAction)
     {
-      StartCoroutine(CoAttack(attackDir));
+      StartCoroutine(CoAttack(target));
     }
     else if (AttackStance == EAttackStance.Impact || AttackStance == EAttackStance.Cooldown)
     {
@@ -66,12 +68,37 @@ public class MeeleCombat : MonoBehaviour
     }
   }
 
-  private IEnumerator CoAttack(Vector3? attackDir = null)
+  private IEnumerator CoAttack(MeeleCombat target = null)
   {
     IsInAction = true;
     AttackStance = EAttackStance.Windup;
+
+    var attack = _attackData[_comboCount];
+    var attackDir = transform.forward;
     
-    _animator.CrossFade(_attackData[_comboCount].AnimName, 0.2f);
+    Vector3 startPos = transform.position;
+    Vector3 targetPos = Vector3.zero;
+    
+    if (target != null)
+    {
+      var vecToTarget = target.transform.position - transform.position;
+      vecToTarget.y = 0f;
+      attackDir = vecToTarget.normalized;
+      float distance = vecToTarget.magnitude - attack.DistanceFromTarget;
+
+      if (distance > _longRangeAttackThreshold)
+        attack = _longRageAttackDatas[0];
+
+      if (attack.CanMoveToTarget)
+      {
+        if(distance < attack.MaxMoveDistance)
+          targetPos = target.transform.position - attackDir * attack.DistanceFromTarget;
+        else
+          targetPos = startPos + attackDir * attack.MaxMoveDistance;
+      }
+    }
+    
+    _animator.CrossFade(attack.AnimName, 0.2f);
     yield return null;
     
     var animState = _animator.GetNextAnimatorStateInfo(1);
@@ -82,18 +109,20 @@ public class MeeleCombat : MonoBehaviour
       timer += Time.deltaTime;
       float normalizedTime = timer / animState.length;
 
+      if (target != null && attack.CanMoveToTarget)
+        transform.position = Vector3.Lerp(startPos, targetPos, normalizedTime);
+
       if (attackDir != null)
       {
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(attackDir.Value),
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(attackDir),
           _rotationSpeed * Time.deltaTime);
-        
       }
 
       if (AttackStance == EAttackStance.Windup)
       {
         if (IsInCounter) break;
           
-        if (normalizedTime >= _attackData[_comboCount].ImpactStartTime)
+        if (normalizedTime >= attack.ImpactStartTime)
         {
           AttackStance = EAttackStance.Impact;
           EnableHitboxCollider(_attackData[_comboCount]);
@@ -101,7 +130,7 @@ public class MeeleCombat : MonoBehaviour
       }
       else if (AttackStance == EAttackStance.Impact)
       {
-        if (normalizedTime >= _attackData[_comboCount].ImpactEndTime)
+        if (normalizedTime >= attack.ImpactEndTime)
         {
           AttackStance = EAttackStance.Cooldown;
           DisableAllHitboxColliders();

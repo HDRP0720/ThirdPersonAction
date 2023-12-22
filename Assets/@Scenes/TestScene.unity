@@ -801,6 +801,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fce286f33dc129343b1075f8dc976310, type: 2}
   - {fileID: 11400000, guid: 8f84fc4d7399fd04b819cbba31297e1e, type: 2}
   - {fileID: 11400000, guid: 9c1e2569fb2206246b49b03088b79878, type: 2}
+  _longRageAttackDatas:
+  - {fileID: 11400000, guid: ee4b95af23f493841a010e32241c1f1e, type: 2}
+  _longRangeAttackThreshold: 1.5
+  _rotationSpeed: 500
 --- !u!114 &1387156079
 MonoBehaviour:
   m_ObjectHideFlags: 0
