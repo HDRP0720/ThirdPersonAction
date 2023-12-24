@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class PlayerController : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class PlayerController : MonoBehaviour
   private MeeleCombat _meeleCombat;
   private CombatController _combatController;
 
+  private bool _hasControl = true;
   private bool _isGrounded;
   private float _ySpeed;
   
@@ -60,6 +62,8 @@ public class PlayerController : MonoBehaviour
     var moveInput = new Vector3(h, 0, v).normalized;
     var moveDir = _cameraController.GetPlanarRotation * moveInput;
     InputDir = moveDir;
+    
+    if (!_hasControl) return;
     
     CheckGround();
 
@@ -102,6 +106,18 @@ public class PlayerController : MonoBehaviour
     
     velocity.y = _ySpeed;
     _cc.Move(velocity * Time.deltaTime);
+  }
+
+  public void SetControl(bool isControl)
+  {
+    _hasControl = isControl;
+    _cc.enabled = isControl;
+
+    if (!isControl)
+    {
+      _animator.SetFloat(ForwardSpeed, 0f);
+      _targetRotation = transform.rotation;
+    }
   }
   
   private void CheckGround()
