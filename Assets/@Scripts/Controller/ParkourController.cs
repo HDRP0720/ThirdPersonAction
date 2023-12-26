@@ -48,9 +48,18 @@ public class ParkourController : MonoBehaviour
 
     var animState = _animator.GetNextAnimatorStateInfo(0);
     if(!animState.IsName(data.GetAnimationClipName))
-      Debug.LogError("The parkour Data's anim name and animation name aren't matched. Please Check!!!");
+      Debug.LogError("The parkour data's animation name does not match the specified animation.");
 
-    yield return new WaitForSeconds(animState.length);
+    float timer = 0f;
+    while (timer <= animState.length)
+    {
+      timer += Time.deltaTime;
+      if (data.ShouldRotateToObstacle)
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, data.TargetRotation, 
+                                        _player.GetRotationSpeed * Time.deltaTime);
+
+      yield return null;
+    }
     
     _player.SetControl(true);
     _isInAction = false;

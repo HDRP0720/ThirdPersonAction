@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour
   
   // Property
   public Vector3 InputDir { get; private set; }
+  public float GetRotationSpeed => _rotationSpeed;
   
   // For Animation parameters
   private static readonly int ForwardSpeed = Animator.StringToHash("forwardSpeed");

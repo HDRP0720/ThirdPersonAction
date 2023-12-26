@@ -16,3 +16,4 @@ MonoBehaviour:
     type: 3}
   _minHeight: 0.8
   _maxHeight: 1.5
+  _shouldRotateToObstacle: 1
