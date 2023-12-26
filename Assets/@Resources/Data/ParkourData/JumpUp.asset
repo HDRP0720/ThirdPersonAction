@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b4d9065b5622c24c8ae5caf842c6338, type: 3}
-  m_Name: SS_Slash03
+  m_Script: {fileID: 11500000, guid: cb0543a82d2c30d4691e86e6a8c7c987, type: 3}
+  m_Name: JumpUp
   m_EditorClassIdentifier: 
-  <AnimName>k__BackingField: SS_Slash03
-  <HitboxToUse>k__BackingField: 4
-  <ImpactStartTime>k__BackingField: 0.38
-  <ImpactEndTime>k__BackingField: 0.64
+  _animationClip: {fileID: -203655887218126122, guid: e26b541518e0c8b459722577ebf3fee4,
+    type: 3}
+  _minHeight: 0.8
+  _maxHeight: 1.5

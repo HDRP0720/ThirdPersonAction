@@ -13,6 +13,11 @@ MonoBehaviour:
   m_Name: Front_Kick
   m_EditorClassIdentifier: 
   <AnimName>k__BackingField: Front_Kick
-  <HitboxToUse>k__BackingField: 3
+  <HitboxToUse>k__BackingField: 0
   <ImpactStartTime>k__BackingField: 0.11
   <ImpactEndTime>k__BackingField: 0.3
+  <CanMoveToTarget>k__BackingField: 0
+  <DistanceFromTarget>k__BackingField: 1
+  <MaxMoveDistance>k__BackingField: 3
+  <MoveStartTime>k__BackingField: 0
+  <MoveEndTime>k__BackingField: 1

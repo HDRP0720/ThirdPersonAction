@@ -1043,6 +1043,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _forwardRayOffset: {x: 0, y: 0.25, z: 0}
   _forwardRayLength: 0.8
+  _heightRayLength: 5
   _obstacleLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -1058,6 +1059,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0235eb59c6ce2b64e99f06d1e3e0a9f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _parkourData:
+  - {fileID: 11400000, guid: c4921fd7d27f9a948bedaa8c8ab2d358, type: 2}
+  - {fileID: 11400000, guid: dd168ec8f7e30d94789bfad78d6158d6, type: 2}
 --- !u!1 &1425617208 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4963564104952876237, guid: 2174b7c0d515d9c4bb5ff2ccf89e280c,
