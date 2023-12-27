@@ -43,11 +43,11 @@ public class ParkourController : MonoBehaviour
     _isInAction = true;
     _player.SetControl(false);
     
-    _animator.CrossFade(data.GetAnimationClipName, 0.2f);
+    _animator.CrossFade(data.AnimationClipName, 0.2f);
     yield return null;
 
     var animState = _animator.GetNextAnimatorStateInfo(0);
-    if(!animState.IsName(data.GetAnimationClipName))
+    if(!animState.IsName(data.AnimationClipName))
       Debug.LogError("The parkour data's animation name does not match the specified animation.");
 
     float timer = 0f;
@@ -64,6 +64,9 @@ public class ParkourController : MonoBehaviour
       yield return null;
     }
     
+    // 연속된 animation 으로 input 조작을 늦춰야할 경우 적용됨
+    yield return new WaitForSeconds(data.PostAnimDelay);
+    
     _player.SetControl(true);
     _isInAction = false;
   }
@@ -73,6 +76,6 @@ public class ParkourController : MonoBehaviour
     if (_animator.isMatchingTarget) return;
     
     _animator.MatchTarget(data.MatchPos, transform.rotation, data.MatchBodyPart, 
-      new MatchTargetWeightMask(new Vector3(0, 1, 0), 0), data.MatchStartTime, data.MatchEndTime);
+      new MatchTargetWeightMask(data.MatchPosWeight, 0), data.MatchStartTime, data.MatchEndTime);
   }
 }
