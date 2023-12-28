@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _animationClip: {fileID: -203655887218126122, guid: e3c94fb4b4512f440bd85ae5a3c07813,
     type: 3}
+  _obstacleTag: 
   _minHeight: 1.5
   _maxHeight: 2.5
   _shouldRotateToObstacle: 1
-  _postAnimDelay: 0.4
+  _postAnimDelay: 0.5
   _canTargetMatching: 1
   _matchBodyPart: 5
   _matchStartTime: 0.08

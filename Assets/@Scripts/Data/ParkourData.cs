@@ -6,7 +6,8 @@ using UnityEngine;
 public class ParkourData : ScriptableObject
 {
   #region Variables
-  [SerializeField] private AnimationClip  _animationClip;   // 재생할 animation의 클립 
+  [SerializeField] private AnimationClip  _animationClip;   // 재생할 animation의 클립
+  [SerializeField] private string _obstacleTag;             // 특정 태그에 따라 다른 모션 활성화
   [SerializeField] private float _minHeight;                // animation이 재생될 최소 제한 높이 (character controller의 step offset 보다 높아야함)
   [SerializeField] private float _maxHeight;                // animation이 재생될 최대 제한 높이 
   [SerializeField] private bool _shouldRotateToObstacle;    // animation이 재생될 때, 캐릭터를 obstacle로 회전 시킬지 여부를 결정
@@ -36,6 +37,11 @@ public class ParkourData : ScriptableObject
 
   public bool CheckIfPossible(ObstacleHitData hitData, Transform player)
   {
+    // Compare tag value
+    if (!string.IsNullOrEmpty(_obstacleTag) && !hitData.forwardHit.transform.CompareTag(_obstacleTag))
+      return false;
+      
+    // Compare Height value
     float height = hitData.heightHit.point.y - player.position.y;
     if (height < _minHeight || height > _maxHeight) 
       return false;

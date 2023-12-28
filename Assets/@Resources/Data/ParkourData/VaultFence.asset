@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cb0543a82d2c30d4691e86e6a8c7c987, type: 3}
-  m_Name: JumpUp
+  m_Name: VaultFence
   m_EditorClassIdentifier: 
-  _animationClip: {fileID: -203655887218126122, guid: e26b541518e0c8b459722577ebf3fee4,
-    type: 3}
+  _animationClip: {fileID: 7400000, guid: 6dd503d348f4b9446b3027d1ab61e4ed, type: 3}
+  _obstacleTag: Fence
   _minHeight: 0.8
-  _maxHeight: 1.5
+  _maxHeight: 1.2
   _shouldRotateToObstacle: 1
   _postAnimDelay: 0
   _canTargetMatching: 1
-  _matchBodyPart: 3
-  _matchStartTime: 0.15
-  _matchEndTime: 0.4
-  _matchPosWeight: {x: 0, y: 1, z: 0}
+  _matchBodyPart: 5
+  _matchStartTime: 0.08
+  _matchEndTime: 0.31
+  _matchPosWeight: {x: 0, y: 1, z: 1}
