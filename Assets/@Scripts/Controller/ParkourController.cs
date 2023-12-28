@@ -43,6 +43,7 @@ public class ParkourController : MonoBehaviour
     _isInAction = true;
     _player.SetControl(false);
     
+    _animator.SetBool("IsMirror", data.IsMirror);
     _animator.CrossFade(data.AnimationClipName, 0.2f);
     yield return null;
 
@@ -60,7 +61,9 @@ public class ParkourController : MonoBehaviour
       
       if(data.CanTargetMatching)
         MatchTarget(data);
-
+      
+      // vault animation 재생 마지막 부분의 height 값과 실제 값이 다른 경우를 위함
+      // 강제로 root motion에서 character controller로 이전 (중력 적용을 위해서)
       if (_animator.IsInTransition(0) && timer > 0.5f)
         break;
 

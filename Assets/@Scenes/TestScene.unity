@@ -1166,7 +1166,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _parkourData:
   - {fileID: 11400000, guid: c4921fd7d27f9a948bedaa8c8ab2d358, type: 2}
-  - {fileID: 11400000, guid: a1478f95b571f0e45aeac234f0be7fe5, type: 2}
+  - {fileID: 11400000, guid: 5359b47b7fdcee04287442080b4f57d3, type: 2}
   - {fileID: 11400000, guid: dd168ec8f7e30d94789bfad78d6158d6, type: 2}
   - {fileID: 11400000, guid: 9607542551b264040a1ead1314eadf6c, type: 2}
 --- !u!1 &1425617208 stripped

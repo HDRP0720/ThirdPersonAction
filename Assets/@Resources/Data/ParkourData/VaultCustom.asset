@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb0543a82d2c30d4691e86e6a8c7c987, type: 3}
-  m_Name: VaultFence
+  m_Script: {fileID: 11500000, guid: 4c1f6b2b1dca9ed45a56616b3c214f57, type: 3}
+  m_Name: VaultCustom
   m_EditorClassIdentifier: 
   _animationClip: {fileID: 7400000, guid: 6dd503d348f4b9446b3027d1ab61e4ed, type: 3}
   _obstacleTag: Fence

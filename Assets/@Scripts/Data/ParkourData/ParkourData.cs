@@ -15,7 +15,7 @@ public class ParkourData : ScriptableObject
   
   [Header("Target Matching Settings")][Space]
   [SerializeField] private bool _canTargetMatching = true;  // target matching을 할지 여부를 결정
-  [SerializeField] private AvatarTarget _matchBodyPart;     // target matching 적용 부위를 결정
+  [SerializeField] protected AvatarTarget _matchBodyPart;   // target matching 적용 부위를 결정
   [SerializeField] private float _matchStartTime;           // target mathcing이 시작될 애니메이션 클립의 시간 (퍼센트를 백분율로 )
   [SerializeField] private float _matchEndTime;             // target mathcing이 적용될 애니메이션 클립의 시간 (퍼센트를 백분율로 )
   [SerializeField] private Vector3 _matchPosWeight = new Vector3(0, 1, 0);
@@ -33,9 +33,10 @@ public class ParkourData : ScriptableObject
   public float MatchEndTime => _matchEndTime;
   public Vector3 MatchPosWeight => _matchPosWeight;
   public Vector3 MatchPos { get; set; }
+  public bool IsMirror { get; set; }
   #endregion
 
-  public bool CheckIfPossible(ObstacleHitData hitData, Transform player)
+  public virtual bool CheckIfPossible(ObstacleHitData hitData, Transform player)
   {
     // Compare tag value
     if (!string.IsNullOrEmpty(_obstacleTag) && !hitData.forwardHit.transform.CompareTag(_obstacleTag))
