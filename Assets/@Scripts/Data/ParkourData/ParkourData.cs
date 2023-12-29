@@ -18,7 +18,7 @@ public class ParkourData : ScriptableObject
   [SerializeField] protected AvatarTarget _matchBodyPart;   // target matching 적용 부위를 결정
   [SerializeField] private float _matchStartTime;           // target mathcing이 시작될 애니메이션 클립의 시간 (퍼센트를 백분율로 )
   [SerializeField] private float _matchEndTime;             // target mathcing이 적용될 애니메이션 클립의 시간 (퍼센트를 백분율로 )
-  [SerializeField] private Vector3 _matchPosWeight = new Vector3(0, 1, 0);
+  [SerializeField] private Vector3 _matchPosWeight = new Vector3(0, 1, 0);  // target matching 적용 축(axis) 조절 [root motion 대체] 
   #endregion
 
   #region Properties

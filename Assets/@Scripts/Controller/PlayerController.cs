@@ -21,14 +21,16 @@ public class PlayerController : MonoBehaviour
   private Animator _animator;
   private MeeleCombat _meeleCombat;
   private CombatController _combatController;
+  private EnvironmentScanner _environmentScanner;
 
   private bool _hasControl = true;
   private bool _isGrounded;
   private float _ySpeed;
   
   // Property
-  public Vector3 InputDir { get; private set; }
   public float GetRotationSpeed => _rotationSpeed;
+  public Vector3 InputDir { get; private set; }
+  public bool IsOnLedge { get; set; }
   
   // For Animation parameters
   private static readonly int ForwardSpeed = Animator.StringToHash("forwardSpeed");
@@ -45,6 +47,7 @@ public class PlayerController : MonoBehaviour
     _animator = GetComponent<Animator>();
     _meeleCombat = GetComponent<MeeleCombat>();
     _combatController = GetComponent<CombatController>();
+    _environmentScanner = GetComponent<EnvironmentScanner>();
   }
   private void Update()
   {
@@ -69,10 +72,18 @@ public class PlayerController : MonoBehaviour
     CheckGround();
 
     if (_isGrounded)
+    {
       _ySpeed = -0.5f;
-    else
-      _ySpeed += Physics.gravity.y * Time.deltaTime;
 
+      IsOnLedge = _environmentScanner.IsNearLedge(moveDir);
+      if(IsOnLedge)
+        Debug.Log("I'm On Ledge!!!");
+    }
+    else
+    {
+      _ySpeed += Physics.gravity.y * Time.deltaTime;
+    }
+    
     var velocity = moveDir * _moveSpeed;
     
     // 전투 또는 에너미 타겟이 설정되면 Lock-On 모드로 변경
