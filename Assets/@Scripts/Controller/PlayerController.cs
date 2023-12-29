@@ -31,6 +31,7 @@ public class PlayerController : MonoBehaviour
   public float GetRotationSpeed => _rotationSpeed;
   public Vector3 InputDir { get; private set; }
   public bool IsOnLedge { get; set; }
+  public LedgeData LedgeData { get; set; }
   
   // For Animation parameters
   private static readonly int ForwardSpeed = Animator.StringToHash("forwardSpeed");
@@ -68,23 +69,30 @@ public class PlayerController : MonoBehaviour
     InputDir = moveDir;
     
     if (!_hasControl) return;
+
+    var velocity = Vector3.zero;
     
     CheckGround();
+    _animator.SetBool("IsGrounded", _isGrounded);
 
     if (_isGrounded)
     {
       _ySpeed = -0.5f;
+      velocity = moveDir * _moveSpeed;
 
-      IsOnLedge = _environmentScanner.IsNearLedge(moveDir);
-      if(IsOnLedge)
+      IsOnLedge = _environmentScanner.IsNearLedge(moveDir, out LedgeData ledgeData);
+      if (IsOnLedge)
+      {
+        LedgeData = ledgeData;
         Debug.Log("I'm On Ledge!!!");
+      }
     }
     else
     {
       _ySpeed += Physics.gravity.y * Time.deltaTime;
+
+      // velocity = transform.forward * (_moveSpeed * 0.5f);
     }
-    
-    var velocity = moveDir * _moveSpeed;
     
     // 전투 또는 에너미 타겟이 설정되면 Lock-On 모드로 변경
     if (_combatController.IsCombatMode)
