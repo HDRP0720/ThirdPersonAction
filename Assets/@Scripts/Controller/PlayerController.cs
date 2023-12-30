@@ -22,7 +22,10 @@ public class PlayerController : MonoBehaviour
   private MeeleCombat _meeleCombat;
   private CombatController _combatController;
   private EnvironmentScanner _environmentScanner;
-
+  
+  private Vector3 _desiredMoveDir;
+  private Vector3 _moveDir;
+  private Vector3 _velocity;
   private bool _hasControl = true;
   private bool _isGrounded;
   private float _ySpeed;
@@ -65,39 +68,42 @@ public class PlayerController : MonoBehaviour
     float moveAmount =Mathf.Clamp01(Mathf.Abs(h) + Mathf.Abs(v));
 
     var moveInput = new Vector3(h, 0, v).normalized;
-    var moveDir = _cameraController.GetPlanarRotation * moveInput;
-    InputDir = moveDir;
+    _desiredMoveDir = _cameraController.GetPlanarRotation * moveInput;
+    _moveDir = _desiredMoveDir;
+    InputDir = _desiredMoveDir;
     
     if (!_hasControl) return;
 
-    var velocity = Vector3.zero;
+    _velocity = Vector3.zero;
     
-    CheckGround();
+    _isGrounded = CheckGround();
     _animator.SetBool("IsGrounded", _isGrounded);
 
     if (_isGrounded)
     {
       _ySpeed = -0.5f;
-      velocity = moveDir * _moveSpeed;
+      _velocity = _desiredMoveDir * _moveSpeed;
 
-      IsOnLedge = _environmentScanner.IsNearLedge(moveDir, out LedgeData ledgeData);
+      IsOnLedge = _environmentScanner.IsOnLedge(_desiredMoveDir, out LedgeData ledgeData);
       if (IsOnLedge)
       {
         LedgeData = ledgeData;
-        Debug.Log("I'm On Ledge!!!");
+        MoveNearLedge();
+        // Debug.Log("I'm On Ledge!!!");
       }
+      
+      _animator.SetFloat(ForwardSpeed, _velocity.magnitude / _moveSpeed, 0.2f, Time.deltaTime);
     }
     else
     {
       _ySpeed += Physics.gravity.y * Time.deltaTime;
-
       // velocity = transform.forward * (_moveSpeed * 0.5f);
     }
     
     // 전투 또는 에너미 타겟이 설정되면 Lock-On 모드로 변경
     if (_combatController.IsCombatMode)
     {
-      velocity /= 4f;
+      _velocity /= 4f;
       
       var targetVec = _combatController.TargetEnemy.transform.position - transform.position;
       targetVec.y = 0f;
@@ -108,24 +114,23 @@ public class PlayerController : MonoBehaviour
         transform.rotation = Quaternion.RotateTowards(transform.rotation, _targetRotation, _rotationSpeed * Time.deltaTime);
       }
     
-      float forwardSpeed = Vector3.Dot(velocity, transform.forward);
+      float forwardSpeed = Vector3.Dot(_velocity, transform.forward);
       _animator.SetFloat(ForwardSpeed, forwardSpeed / _moveSpeed, 0.2f, Time.deltaTime);
 
-      float angle = Vector3.SignedAngle(transform.forward, velocity, Vector3.up);
+      float angle = Vector3.SignedAngle(transform.forward, _velocity, Vector3.up);
       float strafeSpeed = Mathf.Sin(angle * Mathf.Deg2Rad);
       _animator.SetFloat(StrafeSpeed, strafeSpeed, 0.2f, Time.deltaTime);
     }
     else
     {
-      if (moveAmount > 0)
-        _targetRotation = Quaternion.LookRotation(moveDir);
+      if (moveAmount > 0 && _moveDir.magnitude > 0.2f)
+        _targetRotation = Quaternion.LookRotation(_moveDir);
 
       transform.rotation = Quaternion.RotateTowards(transform.rotation, _targetRotation, _rotationSpeed * Time.deltaTime);
-      _animator.SetFloat(ForwardSpeed, moveAmount, 0.2f, Time.deltaTime);
     }
     
-    velocity.y = _ySpeed;
-    _cc.Move(velocity * Time.deltaTime);
+    _velocity.y = _ySpeed;
+    _cc.Move(_velocity * Time.deltaTime);
   }
 
   public void SetControl(bool isControl)
@@ -140,9 +145,19 @@ public class PlayerController : MonoBehaviour
     }
   }
   
-  private void CheckGround()
+  private bool CheckGround()
   {
-    _isGrounded = Physics.CheckSphere(transform.TransformPoint(_groundCheckOffset), _groundCheckRadius, _groundLayer);
+    return Physics.CheckSphere(transform.TransformPoint(_groundCheckOffset), _groundCheckRadius, _groundLayer);
+  }
+
+  private void MoveNearLedge()
+  {
+    float angle = Vector3.Angle(LedgeData.surfaceHit.normal, _desiredMoveDir);
+    if (angle < 90)
+    {
+      _velocity = Vector3.zero;
+      _moveDir = Vector3.zero;
+    }
   }
 
   private void OnDrawGizmosSelected()

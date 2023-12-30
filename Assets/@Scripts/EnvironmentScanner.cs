@@ -33,7 +33,7 @@ public class EnvironmentScanner : MonoBehaviour
     return hitData;
   }
 
-  public bool IsNearLedge(Vector3 moveDir, out LedgeData ledgeData)
+  public bool IsOnLedge(Vector3 moveDir, out LedgeData ledgeData)
   {
     ledgeData = new LedgeData();
     if (moveDir == Vector3.zero) return false;
