@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
 {
   public static PlayerController Instance { get; private set; }
   
+  # region Variables
   [SerializeField] private float _moveSpeed = 5f;
   [SerializeField] private float _rotationSpeed = 500f;
   
@@ -14,8 +15,6 @@ public class PlayerController : MonoBehaviour
   [SerializeField] private Vector3 _groundCheckOffset;
   [SerializeField] private LayerMask _groundLayer;
   
-  private Quaternion _targetRotation;
-  
   private CameraController _cameraController;
   private CharacterController _cc;
   private Animator _animator;
@@ -23,18 +22,21 @@ public class PlayerController : MonoBehaviour
   private CombatController _combatController;
   private EnvironmentScanner _environmentScanner;
   
+  private Quaternion _targetRotation;
   private Vector3 _desiredMoveDir;
   private Vector3 _moveDir;
   private Vector3 _velocity;
   private bool _hasControl = true;
   private bool _isGrounded;
   private float _ySpeed;
-  
-  // Property
+  #endregion
+
+  #region Properties
   public float GetRotationSpeed => _rotationSpeed;
   public Vector3 InputDir { get; private set; }
   public bool IsOnLedge { get; set; }
   public LedgeData LedgeData { get; set; }
+  #endregion
   
   // For Animation parameters
   private static readonly int ForwardSpeed = Animator.StringToHash("forwardSpeed");
@@ -89,7 +91,6 @@ public class PlayerController : MonoBehaviour
       {
         LedgeData = ledgeData;
         MoveNearLedge();
-        // Debug.Log("I'm On Ledge!!!");
       }
       
       _animator.SetFloat(ForwardSpeed, _velocity.magnitude / _moveSpeed, 0.2f, Time.deltaTime);
@@ -152,11 +153,30 @@ public class PlayerController : MonoBehaviour
 
   private void MoveNearLedge()
   {
-    float angle = Vector3.Angle(LedgeData.surfaceHit.normal, _desiredMoveDir);
-    if (angle < 90)
+    var signedAngle = Vector3.SignedAngle(LedgeData.surfaceHit.normal, _desiredMoveDir, Vector3.up);
+    var angle = Mathf.Abs(signedAngle);
+    
+    // Only for character rotation, Not move
+    if (Vector3.Angle(_desiredMoveDir, transform.forward) >= 80)
+    {
+      _velocity = Vector3.zero;
+      return;
+    }
+    
+    // For joystick movement, if angle is b/w 60 and 90, then limit the velocity only to horizontal direction
+    if (angle < 60)
     {
       _velocity = Vector3.zero;
       _moveDir = Vector3.zero;
+    }
+    else if (angle < 90)
+    {
+     
+      var left = Vector3.Cross(Vector3.up, LedgeData.surfaceHit.normal);
+      var dir = left * Mathf.Sign(signedAngle);
+
+      _velocity = _velocity.magnitude * dir;
+      _moveDir = dir;
     }
   }
 
