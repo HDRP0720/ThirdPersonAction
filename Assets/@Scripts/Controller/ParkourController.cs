@@ -7,6 +7,7 @@ public class ParkourController : MonoBehaviour
 {
   [SerializeField] private List<ParkourData> _parkourData;
   [SerializeField] private ParkourData _jumpDownData;
+  [SerializeField] private float _autoJumpHeightLimit = 1f;   // 지정된 높이값 이하에선 auto-jump
   
   private Animator _animator;
   private PlayerController _player;
@@ -39,9 +40,11 @@ public class ParkourController : MonoBehaviour
       }
     }
     
-    if (_player.IsOnLedge && !_isInAction && !hitData.isForwardHitFound && Input.GetButton("Jump"))
+    if (_player.IsOnLedge && !_isInAction && !hitData.isForwardHitFound)
     {
-      if (_player.LedgeData.angle <= 50)
+      bool shouldAutoJump = !(_player.LedgeData.height > _autoJumpHeightLimit && !Input.GetButton("Jump"));
+      
+      if (shouldAutoJump && _player.LedgeData.angle <= 50)
       {
         _player.IsOnLedge = false;
         StartCoroutine(CoParkourAction(_jumpDownData));
