@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviour
 
   #region Properties
   public float GetRotationSpeed => _rotationSpeed;
+  public bool HasControl { get => _hasControl; set => _hasControl = value; }
   public Vector3 InputDir { get; private set; }
   public bool IsOnLedge { get; set; }
   public LedgeData LedgeData { get; set; }

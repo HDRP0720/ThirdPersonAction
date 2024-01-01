@@ -40,7 +40,7 @@ public class EnvironmentScanner : MonoBehaviour
     
     if (moveDir == Vector3.zero) return false;
   
-    float originOffset = 0.5f;
+    float originOffset = 0.5f;  // input dir 방향 보다 얼마나 앞에서 raycast를 사용할지
     var origin = transform.position + moveDir * originOffset + Vector3.up;
     if (PhysicsUtil.ThreeRaycasts(origin, Vector3.down, 0.3f, transform, out List<RaycastHit> hits, _ledgeRayLength, _obstacleLayer, true))
     {
