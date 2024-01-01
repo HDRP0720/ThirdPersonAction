@@ -1,6 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class EnvironmentScanner : MonoBehaviour
 {
@@ -19,7 +20,7 @@ public class EnvironmentScanner : MonoBehaviour
     hitData.isForwardHitFound = Physics.Raycast(transform.position + _forwardRayOffset, transform.forward, 
                                                 out hitData.forwardHit, _forwardRayLength, _obstacleLayer);
     
-    Debug.DrawRay(forwardRayOrigin, transform.forward * _forwardRayLength, hitData.isForwardHitFound ? Color.red: Color.white);
+    // Debug.DrawRay(forwardRayOrigin, transform.forward * _forwardRayLength, hitData.isForwardHitFound ? Color.red: Color.white);
 
     if (hitData.isForwardHitFound)
     {
@@ -36,21 +37,25 @@ public class EnvironmentScanner : MonoBehaviour
   public bool IsOnLedge(Vector3 moveDir, out LedgeData ledgeData)
   {
     ledgeData = new LedgeData();
+    
     if (moveDir == Vector3.zero) return false;
   
     float originOffset = 0.5f;
     var origin = transform.position + moveDir * originOffset + Vector3.up;
-    
-    if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, _ledgeRayLength, _obstacleLayer))
+    if (PhysicsUtil.ThreeRaycasts(origin, Vector3.down, 0.3f, transform, out List<RaycastHit> hits, _ledgeRayLength, _obstacleLayer, true))
     {
-      Debug.DrawRay(origin, Vector3.down*_ledgeRayLength, Color.green);
-
-      var surfaceRayOrigin = transform.position + moveDir - new Vector3(0, 0.1f, 0);
-      if (Physics.Raycast(surfaceRayOrigin, -moveDir, out RaycastHit surfaceHit, 2f, _obstacleLayer))
+      var validHits = hits.Where(h => transform.position.y - h.point.y > _ledgeHeightThreshHold).ToList();
+      if (validHits.Count > 0)
       {
-        float height = transform.position.y - hit.point.y;
-        if (height > _ledgeHeightThreshHold)
+        // var surfaceRayOrigin = transform.position + moveDir - new Vector3(0, 0.1f, 0);
+        var surfaceRayOrigin = validHits[0].point;
+        surfaceRayOrigin.y = transform.position.y - 0.1f;
+        if (Physics.Raycast(surfaceRayOrigin, transform.position - surfaceRayOrigin, out RaycastHit surfaceHit, 2f, _obstacleLayer))
         {
+          Debug.DrawLine(surfaceRayOrigin, transform.position, Color.cyan);
+          
+          float height = transform.position.y - validHits[0].point.y;
+        
           ledgeData.angle = Vector3.Angle(transform.forward, surfaceHit.normal);
           ledgeData.height = height;
           ledgeData.surfaceHit = surfaceHit;
