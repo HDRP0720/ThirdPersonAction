@@ -8,8 +8,10 @@ public class EnvironmentScanner : MonoBehaviour
   [SerializeField] private float _forwardRayLength = 0.8f;
   [SerializeField] private float _heightRayLength = 5f;
   [SerializeField] private float _ledgeRayLength = 10f;
+  [SerializeField] private float _climbLedgeRayLength = 1.5f;
   [SerializeField] private float _ledgeHeightThreshHold = 0.75f;
   [SerializeField] private LayerMask _obstacleLayer;
+  [SerializeField] private LayerMask _climbLedgeLayer;
   
   public ObstacleHitData CheckObstacle()
   {
@@ -33,6 +35,26 @@ public class EnvironmentScanner : MonoBehaviour
     return hitData;
   }
 
+  public bool IsNearClimbLedge(Vector3 dir, out RaycastHit ledgeHit)
+  {
+    ledgeHit = new RaycastHit();
+    if (dir == Vector3.zero) return false;
+
+    var origin = transform.position + Vector3.up * 1.3f;    // set neck position as default
+    var offset = new Vector3(0, 0.18f, 0);
+    for (int i = 0; i < 10; i++)
+    {
+      Debug.DrawRay(origin + offset * i, dir);
+      if (Physics.Raycast(origin + offset * i, dir, out RaycastHit hit, _climbLedgeRayLength, _climbLedgeLayer))
+      {
+        ledgeHit = hit;
+        return true;
+      }
+    }
+
+    return false;
+  }
+  
   public bool IsOnLedge(Vector3 moveDir, out LedgeData ledgeData)
   {
     ledgeData = new LedgeData();
@@ -67,6 +89,9 @@ public class EnvironmentScanner : MonoBehaviour
   }
 }
 
+/// <summary>
+/// Raycast를 활용하여 obstacle layer로 지정된 오브젝트 정보를 가져오기 위한 data container
+/// </summary>
 public struct ObstacleHitData
 {
   public bool isForwardHitFound;
@@ -75,6 +100,9 @@ public struct ObstacleHitData
   public RaycastHit heightHit;
 }
 
+/// <summary>
+/// Raycast를 활용하여 obstacle layer로 지정된 object 근처의 ledge 정보를 가져오기 위한 data container
+/// </summary>
 public struct LedgeData
 {
   public float height;
