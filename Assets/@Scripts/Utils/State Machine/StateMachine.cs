@@ -1,4 +1,3 @@
-
 public class StateMachine<T>
 {
   private T _owner;

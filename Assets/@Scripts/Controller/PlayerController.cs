@@ -1,6 +1,5 @@
-using System;
+using System.Collections;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class PlayerController : MonoBehaviour
 {
@@ -35,6 +34,7 @@ public class PlayerController : MonoBehaviour
   public float GetRotationSpeed => _rotationSpeed;
   public bool HasControl { get => _hasControl; set => _hasControl = value; }
   public Vector3 InputDir { get; private set; }
+  public bool IsInAction { get; private set; }
   public bool IsOnLedge { get; set; }
   public LedgeData LedgeData { get; set; }
   #endregion
@@ -181,9 +181,67 @@ public class PlayerController : MonoBehaviour
     }
   }
 
+  public IEnumerator CoAction(string animName, MatchTargetParams matchParams,
+    Quaternion targetRotation, bool canRotate = false, float postDelay = 0f, bool isMirror = false)
+  {
+    IsInAction = true;
+    
+    _animator.SetBool("IsMirror", isMirror);
+    _animator.CrossFade(animName, 0.2f);
+    yield return null;
+
+    var animState = _animator.GetNextAnimatorStateInfo(0);
+    if(!animState.IsName(animName))
+      Debug.LogError("The parkour data's animation name does not match the specified animation.");
+
+    float timer = 0f;
+    while (timer <= animState.length)
+    {
+      timer += Time.deltaTime;
+      
+      if (canRotate)
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
+      
+      if(matchParams != null)
+        MatchTarget(matchParams);
+      
+      // vault animation 재생 마지막 부분의 height 값과 실제 값이 다른 경우를 위함
+      // 강제로 root motion에서 character controller로 이전 (중력 적용을 위해서)
+      if (_animator.IsInTransition(0) && timer > 0.5f)
+        break;
+
+      yield return null;
+    }
+    
+    // 연속된 animation에서 재생되는 마지막 animation때문에 input 조작 시간을 늦춰야할 경우 적용됨
+    // postDelay에 마지막 animation의 재생시간 입력
+    yield return new WaitForSeconds(postDelay);
+  
+    IsInAction = false;
+  }
+  private void MatchTarget(MatchTargetParams mp)
+  {
+    if (_animator.isMatchingTarget) return;
+    
+    _animator.MatchTarget(mp.matchPos, transform.rotation, mp.matchBodyPart, 
+      new MatchTargetWeightMask(mp.matchPosWeight, 0), mp.matchStartTime, mp.matchEndTime);
+  }
+
   private void OnDrawGizmosSelected()
   {
     Gizmos.color = new Color(0, 1, 0, 0.5f);
     Gizmos.DrawSphere(transform.TransformPoint(_groundCheckOffset), _groundCheckRadius);
   }
+}
+
+/// <summary>
+/// Target Match에 쓰일 파라미터 모음
+/// </summary>
+public class MatchTargetParams
+{
+  public Vector3 matchPos;        // target match가 실행될 position
+  public AvatarTarget matchBodyPart;   // target match가 적용될 body part
+  public Vector3 matchPosWeight;       // target match가 얼마나 적용될지
+  public float matchStartTime;    // target match가 시작될 시간 (예. 67% -> 0.67)
+  public float matchEndTime;      // target match가 완료될 시간 (예. 67% -> 0.67)
 }
