@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
   public Vector3 InputDir { get; private set; }
   public bool IsInAction { get; private set; }
   public bool IsOnLedge { get; set; }
+  public bool IsHanging { get; set; }
   public LedgeData LedgeData { get; set; }
   #endregion
   
@@ -76,6 +77,8 @@ public class PlayerController : MonoBehaviour
     InputDir = _desiredMoveDir;
     
     if (!_hasControl) return;
+
+    if (IsHanging) return;
 
     _velocity = Vector3.zero;
     
