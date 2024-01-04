@@ -23,6 +23,9 @@
   * For Climbing Action
     * [Jump To A Braced Hang From Standing Idle](https://www.mixamo.com/#/?page=1&query=Jump+To+A+Braced+Hang+From+Standing+Idle)
     * [Hanging By Hands Against Wall](https://www.mixamo.com/#/?page=1&query=Hanging+By+Hands+Against+Wall)
+    * [Braced Hang Hop Up To Another Braced Hang](https://www.mixamo.com/#/?page=1&query=Braced+Hang+Hop+Up+To+Another+Braced+Hang)
+    * [Braced Hang Drop To Another Braced Hang](https://www.mixamo.com/#/?page=1&query=Braced+Hang+Drop+To+Another+Braced+Hang)
+    * [Braced Hang Hop Right To Another Braced Hang](https://www.mixamo.com/#/?page=1&query=Braced+Hang+Hop+Right+To+Another+Braced+Hang)
   * For Fight
     * [Brutal Assassination animation set](https://www.mixamo.com/#/?page=1&query=brutal+assassination&type=Motion%2CMotionPack)  
   

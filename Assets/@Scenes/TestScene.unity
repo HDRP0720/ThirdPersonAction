@@ -730,6 +730,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7612875082179316298, guid: b4555861240b84944b2cf1e63f5e266a,
         type: 3}
+      propertyPath: _neighbours.Array.data[0].direction.y
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7612875082179316298, guid: b4555861240b84944b2cf1e63f5e266a,
+        type: 3}
       propertyPath: _neighbours.Array.data[1].direction.x
       value: 1
       objectReference: {fileID: 0}

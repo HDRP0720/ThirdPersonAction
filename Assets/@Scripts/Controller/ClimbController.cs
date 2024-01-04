@@ -8,6 +8,8 @@ public class ClimbController : MonoBehaviour
   private PlayerController _player;
   private EnvironmentScanner _environmentScanner;
 
+  private ClimbPoint currentPoint;
+
   private void Awake()
   {
     _player = GetComponent<PlayerController>();
@@ -20,13 +22,37 @@ public class ClimbController : MonoBehaviour
       if (!Input.GetButton("Jump") || _player.IsInAction) return;
       
       if (!_environmentScanner.IsNearClimbLedge(transform.forward, out RaycastHit ledgeHit)) return;
-      
+
+      currentPoint = ledgeHit.transform.GetComponent<ClimbPoint>();
       _player.SetControl(false);
       StartCoroutine(CoJumpToLedge("Idle To Braced Hang", ledgeHit.transform, 0.41f, 0.54f));
     }
     else
     {
       // TODO: Ledge to ledge jump
+      float h = Mathf.Round(Input.GetAxisRaw("Horizontal"));
+      float v = Mathf.Round(Input.GetAxisRaw("Vertical"));
+      var inputDir = new Vector2(h, v);
+      
+      if(_player.IsInAction || inputDir == Vector2.zero) return;
+
+      var neighbour = currentPoint.GetNeighbour(inputDir);
+      if (neighbour == null) return;
+
+      if (neighbour.connectionType == EConnectionType.Jump && Input.GetButton("Jump"))
+      {
+        currentPoint = neighbour.point;
+        
+        if (neighbour.direction.y == 1)
+          StartCoroutine(CoJumpToLedge("Braced Hang Hop Up", currentPoint.transform, 0.35f, 0.65f));
+        else if (neighbour.direction.y == -1)
+          StartCoroutine(CoJumpToLedge("Braced Hang Drop", currentPoint.transform, 0.31f, 0.65f));
+        else if (neighbour.direction.x == 1)
+          StartCoroutine(CoJumpToLedge("Braced Hang Hop Right", currentPoint.transform, 0.20f, 0.50f));
+        else if (neighbour.direction.x == -1)
+          StartCoroutine(CoJumpToLedge("Braced Hang Hop Left", currentPoint.transform, 0.20f, 0.50f));
+        
+      }
     }
   }
 

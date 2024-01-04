@@ -31,6 +31,19 @@ public class ClimbPoint : MonoBehaviour
     _neighbours.Add(neighbour);
   }
 
+  public Neighbour GetNeighbour(Vector2 direction)
+  {
+    Neighbour neighbour = null;
+
+    if (direction.y != 0)
+      neighbour = _neighbours.FirstOrDefault(n => n.direction.y == direction.y);
+    
+    if(neighbour == null && direction.x != 0)
+      neighbour = _neighbours.FirstOrDefault(n => n.direction.x == direction.x);
+
+    return neighbour;
+  }
+
   private void OnDrawGizmos()
   {
     Debug.DrawRay(transform.position, transform.forward, Color.blue);
