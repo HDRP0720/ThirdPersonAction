@@ -26,6 +26,7 @@
     * [Braced Hang Hop Up To Another Braced Hang](https://www.mixamo.com/#/?page=1&query=Braced+Hang+Hop+Up+To+Another+Braced+Hang)
     * [Braced Hang Drop To Another Braced Hang](https://www.mixamo.com/#/?page=1&query=Braced+Hang+Drop+To+Another+Braced+Hang)
     * [Braced Hang Hop Right To Another Braced Hang](https://www.mixamo.com/#/?page=1&query=Braced+Hang+Hop+Right+To+Another+Braced+Hang)
+    * [Right Braced Hang Shimmy](https://www.mixamo.com/#/?page=1&query=Right+Braced+Hang+Shimmy)
   * For Fight
     * [Brutal Assassination animation set](https://www.mixamo.com/#/?page=1&query=brutal+assassination&type=Motion%2CMotionPack)  
   

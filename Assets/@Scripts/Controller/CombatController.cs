@@ -5,6 +5,7 @@ public class CombatController : MonoBehaviour
   private CameraController _cameraController;
   private MeeleCombat _meeleCombat;
   private Animator _animator;
+  private PlayerController _player;
 
   private EnemyController _targetEnemy;
   private bool _isCombatMode;
@@ -42,6 +43,7 @@ public class CombatController : MonoBehaviour
     
     _meeleCombat = GetComponent<MeeleCombat>();
     _animator = GetComponent<Animator>();
+    _player = GetComponent<PlayerController>();
   }
   private void Update()
   {
