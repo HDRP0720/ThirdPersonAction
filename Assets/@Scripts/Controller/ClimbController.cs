@@ -19,13 +19,25 @@ public class ClimbController : MonoBehaviour
   {
     if (!_player.IsHanging)
     {
-      if (!Input.GetButton("Jump") || _player.IsInAction) return;
-      
-      if (!_environmentScanner.IsNearClimbLedge(transform.forward, out RaycastHit ledgeHit)) return;
+      if (Input.GetButton("Jump") && !_player.IsInAction)
+      {
+        if (_environmentScanner.IsNearClimbLedge(transform.forward, out RaycastHit ledgeHit))
+        {
+          currentPoint = GetNearestClimbPoint(ledgeHit.transform, ledgeHit.point);
+          _player.SetControl(false);
+          StartCoroutine(CoJumpToLedge("Idle To Braced Hang", currentPoint.transform, 0.41f, 0.54f, handOffset: new Vector3(0.2f, 0.05f, 0.05f)));
+        }
+      }
 
-      currentPoint = ledgeHit.transform.GetComponent<ClimbPoint>();
-      _player.SetControl(false);
-      StartCoroutine(CoJumpToLedge("Idle To Braced Hang", ledgeHit.transform, 0.41f, 0.54f, handOffset: new Vector3(0.2f, 0.05f, 0.05f)));
+      if (Input.GetButton("Drop") && !_player.IsInAction)
+      {
+        if (_environmentScanner.IsNearDropLedge(out RaycastHit ledgeHit))
+        {
+          currentPoint = GetNearestClimbPoint(ledgeHit.transform, ledgeHit.point);
+          _player.SetControl(false);
+          StartCoroutine(CoJumpToLedge("Drop To Freehang", currentPoint.transform, 0.30f, 0.45f, handOffset: new Vector3(0.2f, 0.2f, -0.2f)));
+        }
+      }
     }
     else
     {
@@ -126,5 +138,25 @@ public class ClimbController : MonoBehaviour
     var horizontalDir = (matchHand == AvatarTarget.RightHand) ? ledge.right : -ledge.right;
     
     return ledge.position + ledge.forward * offVal.z + Vector3.up * offVal.y - horizontalDir * offVal.x;
+  }
+
+  private ClimbPoint GetNearestClimbPoint(Transform ledge, Vector3 hitPoint)
+  {
+    var points = ledge.GetComponentsInChildren<ClimbPoint>();
+
+    ClimbPoint nearestPoint = null;
+    float nearestDistance = Mathf.Infinity;
+
+    foreach (var point in points)
+    {
+      float distance = Vector3.Distance(point.transform.position, hitPoint);
+      if (distance < nearestDistance)
+      {
+        nearestPoint = point;
+        nearestDistance = distance;
+      }
+    }
+
+    return nearestPoint;
   }
 }

@@ -29,6 +29,7 @@
     * [Right Braced Hang Shimmy](https://www.mixamo.com/#/?page=1&query=Right+Braced+Hang+Shimmy)
     * [Hanging On Wall To Jump Off](https://www.mixamo.com/#/?page=1&query=Hanging+On+Wall+To+Jump+Off)
     * [Climb Wall From Braced Hang To Crouch](https://www.mixamo.com/#/?page=1&query=Climb+Wall+From+Braced+Hang+To+Crouch)
+    * [Standing Drop To Freehang](https://www.mixamo.com/#/?page=1&query=Standing+Drop+To+Freehang)
   * For Fight
     * [Brutal Assassination animation set](https://www.mixamo.com/#/?page=1&query=brutal+assassination&type=Motion%2CMotionPack)  
   
