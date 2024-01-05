@@ -149,6 +149,16 @@ public class PlayerController : MonoBehaviour
       _targetRotation = transform.rotation;
     }
   }
+
+  public void EnableCharacterController(bool isActivated)
+  {
+    _cc.enabled = isActivated;
+  }
+
+  public void ResetTargetRotation()
+  {
+    _targetRotation = transform.rotation;
+  }
   
   private bool CheckGround()
   {
@@ -184,8 +194,8 @@ public class PlayerController : MonoBehaviour
     }
   }
 
-  public IEnumerator CoAction(string animName, MatchTargetParams matchParams,
-    Quaternion targetRotation, bool canRotate = false, float postDelay = 0f, bool isMirror = false)
+  public IEnumerator CoAction(string animName, MatchTargetParams matchParams = null,
+    Quaternion targetRotation = new Quaternion(), bool canRotate = false, float postDelay = 0f, bool isMirror = false)
   {
     IsInAction = true;
     

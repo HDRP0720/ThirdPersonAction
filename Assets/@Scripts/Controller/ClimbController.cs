@@ -29,13 +29,26 @@ public class ClimbController : MonoBehaviour
     }
     else
     {
-      // TODO: Ledge to ledge jump
+      if (Input.GetButton("Drop") && !_player.IsInAction)
+      {
+        StartCoroutine(CoJumpFromHang());
+        return;
+      }
+     
       float h = Mathf.Round(Input.GetAxisRaw("Horizontal"));
       float v = Mathf.Round(Input.GetAxisRaw("Vertical"));
       var inputDir = new Vector2(h, v);
       
       if(_player.IsInAction || inputDir == Vector2.zero) return;
-
+      
+      // Mount from the hanging state
+      if (currentPoint.IsMountPoint && Mathf.Approximately(inputDir.y, 1))
+      {
+        StartCoroutine(CoMountFromHang());
+        return;
+      }
+      
+      // Ledge to ledge jump
       var neighbour = currentPoint.GetNeighbour(inputDir);
       if (neighbour == null) return;
 
@@ -81,6 +94,30 @@ public class ClimbController : MonoBehaviour
     yield return _player.CoAction(anim, matchParams, targetRot, true);
 
     _player.IsHanging = true;
+  }
+
+  private IEnumerator CoJumpFromHang()
+  {
+    _player.IsHanging = false;
+    
+    yield return _player.CoAction("Jump From Wall");
+    
+    _player.ResetTargetRotation();
+    _player.SetControl(true);
+  }
+
+  private IEnumerator CoMountFromHang()
+  {
+    _player.IsHanging = false;
+    
+    yield return _player.CoAction("Braced Hang To Crouch");
+    
+    // _player.EnableCharacterController(true);
+
+    yield return new WaitForSeconds(0.5f);
+    
+    _player.ResetTargetRotation();
+    _player.SetControl(true);
   }
 
   private Vector3 GetHandPos(Transform ledge, AvatarTarget matchHand, Vector3? handOffset)

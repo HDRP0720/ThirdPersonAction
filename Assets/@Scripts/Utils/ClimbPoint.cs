@@ -6,7 +6,11 @@ using UnityEngine;
 
 public class ClimbPoint : MonoBehaviour
 {
+  [SerializeField] private bool _isMountPoint;
   [SerializeField] private List<Neighbour> _neighbours;
+
+  // Getter
+  public bool IsMountPoint => _isMountPoint;
 
   private void Awake()
   {
